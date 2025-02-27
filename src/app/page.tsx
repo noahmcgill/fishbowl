@@ -1,3 +1,6 @@
+import { routeToOwnedPage } from "@/lib/utils/server.ts/routing";
+
 export default async function Home() {
-  return <div>Home</div>;
+  await routeToOwnedPage();
+  return null;
 }

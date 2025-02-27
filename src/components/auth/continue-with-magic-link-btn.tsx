@@ -1,18 +1,25 @@
-import { useFormStatus } from "react-dom";
 import { Button } from "../ui/button";
 import { LuLoader } from "react-icons/lu";
 import { continueWithMagicLink } from "@/lib/utils/actions";
+import { useActionState } from "react";
 
 export const ContinueWithMagicLinkBtn = () => {
-  const status = useFormStatus();
+  const [, action, pending] = useActionState<void, FormData>(
+    async (prevState, formData) => {
+      await continueWithMagicLink(formData);
+      return prevState;
+    },
+    undefined,
+  );
+
   return (
     <Button
       type="submit"
       className="w-full"
-      formAction={continueWithMagicLink}
-      disabled={status.pending}
+      formAction={action}
+      disabled={pending}
     >
-      {status.pending && <LuLoader className="animate-spin" />}
+      {pending && <LuLoader className="animate-spin" />}
       Login
     </Button>
   );
