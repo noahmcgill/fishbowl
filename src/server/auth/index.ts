@@ -10,6 +10,7 @@ const combinedProviders = [
   ...authConfig.providers,
   Resend({
     apiKey: process.env.AUTH_RESEND_KEY,
+    from: process.env.AUTH_RESEND_FROM,
   }),
 ];
 
@@ -23,6 +24,7 @@ const {
   adapter: PrismaAdapter(db),
   pages: {
     signIn: "/login",
+    error: "/login",
   },
   session: { strategy: "jwt" },
 });

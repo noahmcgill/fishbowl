@@ -4,8 +4,43 @@ import { Button } from "@/components/ui/button";
 import { FaGithub } from "react-icons/fa";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useSearchParams } from "next/navigation";
+import { continueWithGithub } from "@/lib/utils/actions";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { ContinueWithMagicLinkBtn } from "./continue-with-magic-link-btn";
 
 export function LoginForm() {
+  const searchParams = useSearchParams();
+
+  const getErrorMsg = (error: string): string => {
+    switch (error) {
+      case "Configuration":
+        return "This sign in method has not been properly configured. Please contact the site admin.";
+      case "AccessDenied":
+        return "Your sign in credentials are invalid. Please try again.";
+      case "Verification":
+        return "There's a problem with your login token. Please try again.";
+      case "OAuthAccountNotLinked":
+        return "The email address linked to this GitHub account has already been used via another sign in provider.";
+      case "Default":
+      default:
+        return "An unexpected error occured. Please try again.";
+    }
+  };
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    const status = searchParams.get("status");
+
+    if (error && error !== "") {
+      const message = getErrorMsg(error);
+      toast.error(message);
+    } else if (status && status === "sent") {
+      toast.success("Please check your email for a login link.");
+    }
+  }, [searchParams]);
+
   return (
     <div className={"flex flex-col gap-6"}>
       <form>
@@ -27,13 +62,7 @@ export function LoginForm() {
                 placeholder="me@example.com"
               />
             </div>
-            <Button
-              type="submit"
-              className="w-full"
-              // formAction={continueWithMagicLink}
-            >
-              Login
-            </Button>
+            <ContinueWithMagicLinkBtn />
           </div>
           <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
             <span className="relative z-10 bg-background px-2 text-muted-foreground">
@@ -44,7 +73,7 @@ export function LoginForm() {
             <Button
               variant="outline"
               className="w-full"
-              // formAction={continueWithGoogle}
+              formAction={continueWithGithub}
             >
               <FaGithub />
               Continue with GitHub
