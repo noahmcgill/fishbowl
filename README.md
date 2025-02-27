@@ -11,6 +11,7 @@ Transparifi is a little like LinkTree, but for displaying startup metrics. Inspi
 - [PostgreSQL](https://www.postgresql.org/) - Database
 - [Prisma](https://prisma.io) - ORM [![Made with Prisma](https://made-with.prisma.io/dark.svg)](https://prisma.io)
 - [Auth.js](https://authjs.dev/) – Authentication 
+- [Resend](https://resend.com) - Email Sending
 
 ## Getting Started
 
@@ -31,6 +32,14 @@ git clone https://github.com/noahmcgill/transparifi.git
 
 ```bash
 npm install
+```
+
+### Provide the environment variables
+
+Copy the sample environment variable file to `.env` and add the values specific to your project:
+
+```bash
+cp .env.example .env
 ```
 
 ### Start your database
