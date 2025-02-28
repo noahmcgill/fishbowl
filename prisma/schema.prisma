@@ -66,6 +66,7 @@ model Page {
   description String?
   companyUrl  String?
   imageUrl    String?
+  color       String? @default("#000000")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

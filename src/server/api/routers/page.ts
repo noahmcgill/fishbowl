@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 import { pageService } from "../services/page";
 import { TRPCError } from "@trpc/server";
 import { TRPCErrorCode } from "@/lib/constants";
@@ -24,11 +28,12 @@ export const pageRouter = createTRPCRouter({
     .input(
       z.object({
         userId: z.string().cuid(),
-        slug: z.string(), // @todo: stricter validation on slug
+        slug: z.string(), // @todo: custom validator
         name: z.string().optional(),
         description: z.string().optional(),
         companyUrl: z.string().url().optional(),
         imageUrl: z.string().url().optional(),
+        color: z.string().optional(), // @todo: custom validator
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -52,12 +57,37 @@ export const pageRouter = createTRPCRouter({
           description: input.description,
           companyUrl: input.companyUrl,
           imageUrl: input.imageUrl,
+          color: input.color,
         });
       } catch (e) {
         console.error(e);
         throw new TRPCError({
-          code: TRPCErrorCode.UNPROCESSABLE_CONTENT,
+          code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
           message: "There was an unexpected error creating the page",
+        });
+      }
+    }),
+
+  // @todo: custom validator on slug input
+  getPageBySlug: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input }) => {
+      try {
+        const page = await pageService.getPageBySlug(input.slug);
+
+        if (!page) {
+          throw new TRPCError({
+            code: TRPCErrorCode.NOT_FOUND,
+            message: "A page with this slug does not exist",
+          });
+        }
+
+        return page;
+      } catch (e) {
+        console.log(e);
+        throw new TRPCError({
+          code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
+          message: "An unexpected error while finding the page",
         });
       }
     }),

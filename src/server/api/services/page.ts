@@ -8,6 +8,7 @@ interface CreatePageInput {
   description?: string;
   companyUrl?: string;
   imageUrl?: string;
+  color?: string;
 }
 
 export class PageService {
@@ -33,6 +34,7 @@ export class PageService {
     description,
     companyUrl,
     imageUrl,
+    color,
   }: CreatePageInput): Promise<void> {
     await db.page.create({
       data: {
@@ -42,7 +44,14 @@ export class PageService {
         description,
         companyUrl,
         imageUrl,
+        color,
       },
+    });
+  }
+
+  async getPageBySlug(slug: string): Promise<Page | null> {
+    return await db.page.findUnique({
+      where: { slug },
     });
   }
 }
