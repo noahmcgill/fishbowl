@@ -59,12 +59,13 @@ model VerificationToken {
 }
 
 model Page {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   userId      String
-  slug        String @unique
-  name        String
-  description String
-  url         String
+  slug        String  @unique
+  name        String?
+  description String?
+  companyUrl  String?
+  imageUrl    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
