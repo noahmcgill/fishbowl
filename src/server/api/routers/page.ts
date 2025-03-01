@@ -91,4 +91,20 @@ export const pageRouter = createTRPCRouter({
         });
       }
     }),
+
+  // @todo: custom validator on slug input
+  slugExists: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input }) => {
+      try {
+        const page = await pageService.getPageBySlug(input.slug);
+        return page !== null;
+      } catch (e) {
+        console.log(e);
+        throw new TRPCError({
+          code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
+          message: "An unexpected error while finding the page",
+        });
+      }
+    }),
 });

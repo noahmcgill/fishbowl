@@ -6,6 +6,7 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "@/components/ui/sonner";
 import { IoMdAlert, IoMdCheckmarkCircle } from "react-icons/io";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const metadata: Metadata = {
   title: "Transparifi - Share your project's metrics",
@@ -26,7 +27,9 @@ export default function RootLayout({
             success: <IoMdCheckmarkCircle className="text-green-500" />,
           }}
         />
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   );

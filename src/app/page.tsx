@@ -1,4 +1,4 @@
-import { ClaimLinkForm } from "@/components/claim-link-form";
+import { ClaimLinkForm } from "@/components/ui/claim-link/claim-link-form";
 import { resolveUserPage } from "@/lib/utils/server/routing";
 import { auth } from "@/server/auth";
 
