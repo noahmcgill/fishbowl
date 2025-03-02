@@ -1,6 +1,6 @@
-# Transparifi - for Open Startups
+# Transparify - for Open Startups
 
-Transparifi is a little like LinkTree, but for displaying startup metrics. Inspired by [Open Startup List](https://openstartuplist.com/) and many of the startups listed on their website, it allows founders to easily stand up and share a page that displays their startup's metrics via widgets.
+Transparify is a little like LinkTree, but for displaying startup metrics. Inspired by [Open Startup List](https://openstartuplist.com/) and many of the startups listed on their website, it allows founders to easily stand up and share a page that displays their startup's metrics via widgets.
 
 ## Tech Stack
 
@@ -17,7 +17,7 @@ Transparifi is a little like LinkTree, but for displaying startup metrics. Inspi
 
 ### Prerequisites
 
-Here's what you need to run Transparifi:
+Here's what you need to run Transparify:
 
 * Node.js (version >= 20.0.0)
 * PostgreSQL Database
@@ -25,7 +25,7 @@ Here's what you need to run Transparifi:
 ### Clone the repository
 
 ```bash
-git clone https://github.com/noahmcgill/transparifi.git
+git clone https://github.com/noahmcgill/transparify.git
 ```
 
 ### Install dependencies

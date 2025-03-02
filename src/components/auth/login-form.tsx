@@ -9,6 +9,7 @@ import { continueWithGithub } from "@/lib/utils/actions";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { ContinueWithMagicLinkBtn } from "./continue-with-magic-link-btn";
+import Link from "next/link";
 
 export function LoginForm() {
   const searchParams = useSearchParams();
@@ -46,10 +47,9 @@ export function LoginForm() {
       <form>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
-            <h1 className="text-2xl font-medium">Welcome to Transparifi</h1>
+            <h1 className="text-2xl font-medium">Login to transparify</h1>
             <div className="text-center text-sm">
-              Foster transparency. <br /> Share your startup&apos;s growth with
-              the world.
+              It&apos;s good to have you back!
             </div>
           </div>
           <div className="flex flex-col gap-6">
@@ -81,10 +81,9 @@ export function LoginForm() {
           </div>
         </div>
       </form>
-      <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div>
+      <p className="text-sm text-zinc-500 text-center">
+        or <Link href="/signup">sign up</Link>
+      </p>
     </div>
   );
 }

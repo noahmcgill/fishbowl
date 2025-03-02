@@ -7,6 +7,7 @@ import { useDebounce } from "@/lib/hooks/useDebounce";
 import { api } from "@/trpc/react";
 import { useEffect, useState } from "react";
 import { ClaimLinkStatusIcon } from "./claim-link-status-icon";
+import Link from "next/link";
 
 export function ClaimLinkForm() {
   const [input, setInput] = useState<string>("");
@@ -32,10 +33,10 @@ export function ClaimLinkForm() {
 
   return (
     <form>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 text-center">
         <div className="grid gap-6">
           <div className="grid gap-2">
-            <Label className="text-2xl" htmlFor="name">
+            <Label className="text-2xl font-medium" htmlFor="name">
               Your project&apos;s stats, stat.
             </Label>
             <p className="text-sm">
@@ -44,7 +45,7 @@ export function ClaimLinkForm() {
           </div>
           <div className="relative">
             <span className="absolute inset-y-0 left-3 flex items-center text-sm text-zinc-800">
-              transparifi.org/
+              transparify.org/
             </span>
             <Input
               id="name"
@@ -68,6 +69,9 @@ export function ClaimLinkForm() {
         <Button disabled={data || isDebouncing || isLoading || input === ""}>
           Claim your link
         </Button>
+        <p className="text-sm text-zinc-500">
+          or <Link href="/login">login</Link>
+        </p>
       </div>
     </form>
   );
