@@ -3,17 +3,28 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useDebounce } from "@/lib/hooks/useDebounce";
 import { api } from "@/trpc/react";
-import { useEffect, useState } from "react";
 import { ClaimLinkStatusIcon } from "./claim-link-status-icon";
 import Link from "next/link";
+import { ClaimLinkStep } from "./types";
 
-export function ClaimLinkForm() {
-  const [input, setInput] = useState<string>("");
-  const [inputHasChanged, setInputHasChanged] = useState<boolean>(false);
+interface ClaimLinkFormProps {
+  slug: string;
+  isDebouncing: boolean;
+  inputHasChanged: boolean;
+  input: string;
+  setCurrentStep: (step: ClaimLinkStep) => void;
+  setInput: (value: string) => void;
+}
 
-  const [slug, isDebouncing] = useDebounce(input, 500);
+export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
+  slug,
+  isDebouncing,
+  inputHasChanged,
+  input,
+  setCurrentStep,
+  setInput,
+}) => {
   const { data, isLoading, error } = api.page.slugExists.useQuery(
     { slug },
     {
@@ -23,12 +34,6 @@ export function ClaimLinkForm() {
       staleTime: 0,
     },
   );
-
-  useEffect(() => {
-    if (input !== "") {
-      setInputHasChanged(true);
-    }
-  }, [input]);
 
   return (
     <form>
@@ -52,6 +57,7 @@ export function ClaimLinkForm() {
               name="name"
               placeholder="your-company"
               className="pl-[114px]"
+              value={slug}
               onChange={(e) => setInput(e.target.value)}
             />
             <span className="absolute inset-y-0 right-3 flex items-center text-sm text-zinc-800">
@@ -70,7 +76,10 @@ export function ClaimLinkForm() {
           </p>
         )}
         {/*eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing*/}
-        <Button disabled={data || isDebouncing || isLoading || input === ""}>
+        <Button
+          disabled={data || isDebouncing || isLoading || input === ""}
+          onClick={() => setCurrentStep(ClaimLinkStep.LOGIN)}
+        >
           Claim your link
         </Button>
         <p className="text-center text-sm text-zinc-500">
@@ -86,4 +95,4 @@ export function ClaimLinkForm() {
       </div>
     </form>
   );
-}
+};

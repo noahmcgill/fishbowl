@@ -10,8 +10,17 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { ContinueWithMagicLinkBtn } from "./continue-with-magic-link-btn";
 import Link from "next/link";
+import { ClaimLinkStep } from "../ui/claim-link/types";
 
-export function LoginForm() {
+interface LoginFormProps {
+  slug?: string;
+  setCurrentStep?: (step: ClaimLinkStep) => void;
+}
+
+export const LoginForm: React.FC<LoginFormProps> = ({
+  slug,
+  setCurrentStep,
+}) => {
   const searchParams = useSearchParams();
 
   const getErrorMsg = (error: string): string => {
@@ -47,9 +56,13 @@ export function LoginForm() {
       <form>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
-            <h1 className="text-2xl font-medium">Login to transparify</h1>
+            <h1 className="text-2xl font-medium">
+              {!slug ? "Login to transparify" : "One last step!"}
+            </h1>
             <div className="text-center text-sm">
-              It&apos;s good to have you back!
+              {!slug
+                ? "It's good to have you back!"
+                : `Create an account to claim your link at /${slug}.`}
             </div>
           </div>
           <div className="flex flex-col gap-6">
@@ -78,19 +91,33 @@ export function LoginForm() {
               <FaGithub />
               Continue with GitHub
             </Button>
+            <input type="hidden" name="slug" value={slug} />
           </div>
         </div>
       </form>
       <p className="text-center text-sm text-zinc-500">
-        or{" "}
+        {slug && (
+          <Button
+            variant="link"
+            className="self-start p-0 font-normal text-zinc-500"
+            onClick={() => setCurrentStep?.(ClaimLinkStep.CHECK_LINK)}
+          >
+            go back
+          </Button>
+        )}
+        {" or "}
         <Button
           asChild
           variant="link"
           className="p-0 font-normal text-zinc-500"
         >
-          <Link href="/signup">sign up</Link>
+          {!slug ? (
+            <Link href="/signup">sign up</Link>
+          ) : (
+            <Link href="/login">login</Link>
+          )}
         </Button>
       </p>
     </div>
   );
-}
+};
