@@ -81,8 +81,15 @@ export function LoginForm() {
           </div>
         </div>
       </form>
-      <p className="text-sm text-zinc-500 text-center">
-        or <Link href="/signup">sign up</Link>
+      <p className="text-center text-sm text-zinc-500">
+        or{" "}
+        <Button
+          asChild
+          variant="link"
+          className="p-0 font-normal text-zinc-500"
+        >
+          <Link href="/signup">sign up</Link>
+        </Button>
       </p>
     </div>
   );

@@ -14,8 +14,7 @@ export function ClaimLinkForm() {
   const [inputHasChanged, setInputHasChanged] = useState<boolean>(false);
 
   const [slug, isDebouncing] = useDebounce(input, 500);
-
-  const { data, isLoading } = api.page.slugExists.useQuery(
+  const { data, isLoading, error } = api.page.slugExists.useQuery(
     { slug },
     {
       enabled: slug !== "" && inputHasChanged,
@@ -52,7 +51,7 @@ export function ClaimLinkForm() {
               type="text"
               name="name"
               placeholder="your-company"
-              className="pl-28"
+              className="pl-[114px]"
               onChange={(e) => setInput(e.target.value)}
             />
             <span className="absolute inset-y-0 right-3 flex items-center text-sm text-zinc-800">
@@ -65,12 +64,24 @@ export function ClaimLinkForm() {
             </span>
           </div>
         </div>
+        {error && (
+          <p className="text-sm text-red-500">
+            An unexpected error occured. Please try again.
+          </p>
+        )}
         {/*eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing*/}
         <Button disabled={data || isDebouncing || isLoading || input === ""}>
           Claim your link
         </Button>
-        <p className="text-sm text-zinc-500">
-          or <Link href="/login">login</Link>
+        <p className="text-center text-sm text-zinc-500">
+          or{" "}
+          <Button
+            asChild
+            variant="link"
+            className="p-0 font-normal text-zinc-500"
+          >
+            <Link href="/login">login</Link>
+          </Button>
         </p>
       </div>
     </form>
