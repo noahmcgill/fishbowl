@@ -14,7 +14,7 @@ export const pageRouter = createTRPCRouter({
     .input(z.object({ id: z.string().cuid() }))
     .query(async ({ input }) => {
       try {
-        return await pageService.getFirstForUserEmail(input.id);
+        return await pageService.getFirstForUser(input.id);
       } catch (e) {
         console.error(e);
         throw new TRPCError({
@@ -38,9 +38,7 @@ export const pageRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        const page = await pageService.getFirstForUserEmail(
-          ctx.session.user.id,
-        );
+        const page = await pageService.getFirstForUser(ctx.session.user.id);
 
         if (page) {
           throw new TRPCError({

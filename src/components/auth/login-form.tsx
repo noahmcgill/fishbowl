@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { ContinueWithMagicLinkBtn } from "./continue-with-magic-link-btn";
 import Link from "next/link";
 import { ClaimLinkStep } from "../ui/claim-link/types";
+import { SLUG_COOKIE_NAME } from "@/lib/constants";
+import Cookies from "js-cookie";
 
 interface LoginFormProps {
   slug?: string;
@@ -33,6 +35,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         return "There's a problem with your login token. Please try again.";
       case "OAuthAccountNotLinked":
         return "The email address linked to this GitHub account has already been used via another sign in provider.";
+      case "SignupRequired":
+        return "Your account was not found. You need to sign up!";
+      case "Callback":
       case "Default":
       default:
         return "An unexpected error occured. Please try again.";
@@ -51,6 +56,25 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     }
   }, [searchParams]);
 
+  // Next Auth v5 doesn't yet permit additional fields to be added to the request.
+  // We need the Next Auth signIn callback to know about any slug being set so
+  // that it can create a page for the user without needing an additional config
+  // page. So, although it's a bit hacky, we're setting a cookie for now.
+  const handleSubmit = async (
+    action: (formData: FormData) => Promise<void>,
+    formData: FormData,
+  ) => {
+    const slug = formData.get("slug") as string;
+
+    if (slug) {
+      Cookies.set(SLUG_COOKIE_NAME, btoa(slug), {
+        sameSite: "lax",
+      });
+    }
+
+    action(formData);
+  };
+
   return (
     <div className={"flex flex-col gap-6"}>
       <form>
@@ -60,9 +84,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               {!slug ? "Login to transparify" : "One last step!"}
             </h1>
             <div className="text-center text-sm">
-              {!slug
-                ? "It's good to have you back!"
-                : `Create an account to claim your link at /${slug}.`}
+              {!slug ? (
+                "It's good to have you back!"
+              ) : (
+                <>
+                  Create an account to claim your link at{" "}
+                  <span className="font-medium">/{slug}</span>.
+                </>
+              )}
             </div>
           </div>
           <div className="flex flex-col gap-6">
@@ -75,7 +104,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 placeholder="me@example.com"
               />
             </div>
-            <ContinueWithMagicLinkBtn />
+            <ContinueWithMagicLinkBtn
+              signup={slug !== undefined}
+              handleSubmit={handleSubmit}
+            />
           </div>
           <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
             <span className="relative z-10 bg-background px-2 text-muted-foreground">
@@ -86,7 +118,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             <Button
               variant="outline"
               className="w-full"
-              formAction={continueWithGithub}
+              formAction={async (data) =>
+                handleSubmit(continueWithGithub, data)
+              }
             >
               <FaGithub />
               Continue with GitHub

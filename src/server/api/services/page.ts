@@ -21,7 +21,7 @@ export class PageService {
     return PageService.instance;
   }
 
-  async getFirstForUserEmail(id: string): Promise<Page | null> {
+  async getFirstForUser(id: string): Promise<Page | null> {
     return await db.page.findFirst({
       where: { userId: id },
     });

@@ -57,7 +57,7 @@ export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
               name="name"
               placeholder="your-company"
               className="pl-[114px]"
-              value={slug}
+              value={input}
               onChange={(e) => setInput(e.target.value)}
             />
             <span className="absolute inset-y-0 right-3 flex items-center text-sm text-zinc-800">

@@ -3,10 +3,20 @@ import { LuLoader } from "react-icons/lu";
 import { continueWithMagicLink } from "@/lib/utils/actions";
 import { useActionState } from "react";
 
-export const ContinueWithMagicLinkBtn = () => {
+interface ContinueWithMagicLinkBtnProps {
+  signup?: boolean;
+  handleSubmit: (
+    action: (formData: FormData) => Promise<void>,
+    formData: FormData,
+  ) => Promise<void>;
+}
+
+export const ContinueWithMagicLinkBtn: React.FC<
+  ContinueWithMagicLinkBtnProps
+> = ({ signup, handleSubmit }) => {
   const [, action, pending] = useActionState<void, FormData>(
     async (prevState, formData) => {
-      await continueWithMagicLink(formData);
+      await handleSubmit(continueWithMagicLink, formData);
       return prevState;
     },
     undefined,
@@ -20,7 +30,7 @@ export const ContinueWithMagicLinkBtn = () => {
       disabled={pending}
     >
       {pending && <LuLoader className="animate-spin" />}
-      Login
+      {signup ? "Sign up" : "Login"}
     </Button>
   );
 };

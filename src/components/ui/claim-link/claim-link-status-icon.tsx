@@ -25,11 +25,11 @@ export const ClaimLinkStatusIcon: React.FC<ClaimLinkStatusIconProps> = ({
   const statusConfig = {
     loading: {
       icon: <LuLoader className="animate-spin" />,
-      message: "We're checking to see if this link already exists.",
+      message: "Checking to see if this link is available.",
     },
     error: {
       icon: <LuCircleAlert className="text-red-600" />,
-      message: "Sorry, this link already exists. Please try a different one.",
+      message: "Sorry, this link is unavailable.",
     },
     success: {
       icon: <LuCircleCheck className="text-green-600" />,

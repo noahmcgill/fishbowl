@@ -6,3 +6,5 @@ export enum TRPCErrorCode {
   BAD_REQUEST = "BAD_REQUEST",
   UNPROCESSABLE_CONTENT = "UNPROCESSABLE_CONTENT",
 }
+
+export const SLUG_COOKIE_NAME = "transparify.signup.slug";
