@@ -1,7 +1,10 @@
 "use server";
 
 import { signIn, signOut } from "@/server/auth";
+import Cookies from "js-cookie";
 import { redirect } from "next/navigation";
+import { SLUG_COOKIE_NAME } from "../constants";
+import { cookies } from "next/headers";
 
 export const continueWithGithub = async (formData: FormData) => {
   await signIn("github", {
@@ -29,4 +32,15 @@ export const continueWithMagicLink = async (formData: FormData) => {
 
 export const logout = async () => {
   await signOut();
+};
+
+export const claim = async (formData: FormData) => {
+  const slug = formData.get("slug") as string;
+  const cookieStore = await cookies();
+
+  cookieStore.set(SLUG_COOKIE_NAME, btoa(slug), {
+    sameSite: "lax",
+  });
+
+  redirect("/signup");
 };

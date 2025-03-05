@@ -115,10 +115,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ slug, setCurrentStep }) => {
           </div>
         </div>
       </form>
-      <AuthOptions
-        signup={slug !== undefined}
-        setCurrentStep={setCurrentStep}
-      />
+      <AuthOptions signup={slug !== undefined} />
     </div>
   );
 };

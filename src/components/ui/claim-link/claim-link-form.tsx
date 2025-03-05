@@ -6,25 +6,30 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/trpc/react";
 import { ClaimLinkStatusIcon } from "./claim-link-status-icon";
 import Link from "next/link";
-import { ClaimLinkStep } from "./types";
+import { useDebounce } from "@/lib/hooks/useDebounce";
+import { useEffect, useState } from "react";
+import { claim } from "@/lib/utils/actions";
+import { useFormStatus } from "react-dom";
+import { LuLoader } from "react-icons/lu";
+import { ClaimLinkBtn } from "./claim-link-btn";
 
 interface ClaimLinkFormProps {
-  slug: string;
-  isDebouncing: boolean;
-  inputHasChanged: boolean;
-  input: string;
-  setCurrentStep: (step: ClaimLinkStep) => void;
-  setInput: (value: string) => void;
+  initialSlug?: string;
 }
 
 export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
-  slug,
-  isDebouncing,
-  inputHasChanged,
-  input,
-  setCurrentStep,
-  setInput,
+  initialSlug,
 }) => {
+  const [input, setInput] = useState<string>(initialSlug ?? "");
+  const [inputHasChanged, setInputHasChanged] = useState<boolean>(false);
+  const [slug, isDebouncing] = useDebounce(input, 500);
+
+  useEffect(() => {
+    if (input !== "") {
+      setInputHasChanged(true);
+    }
+  }, [input]);
+
   const { data, isLoading, error } = api.page.slugExists.useQuery(
     { slug },
     {
@@ -36,7 +41,7 @@ export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
   );
 
   return (
-    <form>
+    <form action={claim}>
       <div className="flex flex-col gap-6 text-center">
         <div className="grid gap-6">
           <div className="grid gap-2">
@@ -52,9 +57,9 @@ export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
               transparify.org/
             </span>
             <Input
-              id="name"
+              id="slug"
               type="text"
-              name="name"
+              name="slug"
               placeholder="your-company"
               className="pl-[114px]"
               value={input}
@@ -75,13 +80,12 @@ export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
             An unexpected error occured. Please try again.
           </p>
         )}
-        {/*eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing*/}
-        <Button
-          disabled={data || isDebouncing || isLoading || input === ""}
-          onClick={() => setCurrentStep(ClaimLinkStep.LOGIN)}
-        >
-          Claim your link
-        </Button>
+        <ClaimLinkBtn
+          data={data}
+          isDebouncing={isDebouncing}
+          isLoading={isLoading}
+          input={input}
+        />
         <p className="text-center text-sm text-zinc-500">
           or{" "}
           <Button

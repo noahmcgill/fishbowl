@@ -37,8 +37,8 @@ const {
   providers: combinedProviders,
   adapter: PrismaAdapter(db),
   pages: {
-    signIn: "/login",
-    error: "/login",
+    signIn: "/api/auth-handler",
+    error: "/api/auth-handler",
     newUser: "/api/start",
   },
   session: { strategy: "jwt" },
