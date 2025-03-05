@@ -1,7 +1,6 @@
 import { auth } from "@/server/auth";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { TbBrandNeteaseMusic } from "react-icons/tb";
 
 export default async function AuthLayout({
   children,

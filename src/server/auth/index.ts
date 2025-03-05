@@ -11,6 +11,17 @@ import { SignupRequiredError } from "@/lib/errors";
 
 const combinedProviders = [
   ...authConfig.providers,
+  /**
+   * The Resend adapter does not create a row in the Account database table like it should.
+   * See: {@link https://github.com/nextauthjs/next-auth/issues/10662}
+   * This doesn't break auth, but instead (I suspect) contributes to account linking with
+   * the Github provider. When first logging in with Github, the user can subsequently
+   * login with a magic link, and the database User is updated to include the emailVerified
+   * column; subsequent logins with Github still work. However, vice versa, Next Auth blocks
+   * Github logins once magic link has been used. We'll maintain this for now, but might
+   * want to set up Email -> Github account linking if the above issue isn't solved,
+   * just to have some consistency.
+   */
   Resend({
     apiKey: process.env.AUTH_RESEND_KEY,
     from: process.env.AUTH_RESEND_FROM,
@@ -51,11 +62,15 @@ const {
      */
     async signIn({ user }) {
       const cookieStore = await cookies();
-      const slugCookie = cookieStore.get(SLUG_COOKIE_NAME);
-      const slug = atob(slugCookie?.value ?? "");
+      const slug = cookieStore.get(SLUG_COOKIE_NAME);
 
+      // Find the page associated with this email
       const page = await db.page.findFirst({
-        where: { userId: user.id ?? "" },
+        where: {
+          user: {
+            email: user.email,
+          },
+        },
       });
 
       if (!page && !slug) {

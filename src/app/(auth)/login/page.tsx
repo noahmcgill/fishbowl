@@ -1,12 +1,5 @@
-import { LoginForm } from "@/components/auth/login-form";
-import { auth } from "@/server/auth";
-import { redirect } from "next/navigation";
+import { AuthForm } from "@/components/auth/auth-form";
 
 export default async function Login() {
-  const session = await auth();
-  if (session) {
-    redirect("/");
-  }
-
-  return <LoginForm />;
+  return <AuthForm />;
 }

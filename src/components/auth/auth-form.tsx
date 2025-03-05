@@ -1,28 +1,23 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { FaGithub } from "react-icons/fa";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useSearchParams } from "next/navigation";
-import { continueWithGithub } from "@/lib/utils/actions";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { ContinueWithMagicLinkBtn } from "./continue-with-magic-link-btn";
-import Link from "next/link";
 import { ClaimLinkStep } from "../ui/claim-link/types";
 import { SLUG_COOKIE_NAME } from "@/lib/constants";
 import Cookies from "js-cookie";
+import { ContinueWithGithubBtn } from "./continue-with-github-btn";
+import { AuthOptions } from "./auth-options";
 
-interface LoginFormProps {
+interface AuthFormProps {
   slug?: string;
   setCurrentStep?: (step: ClaimLinkStep) => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({
-  slug,
-  setCurrentStep,
-}) => {
+export const AuthForm: React.FC<AuthFormProps> = ({ slug, setCurrentStep }) => {
   const searchParams = useSearchParams();
 
   const getErrorMsg = (error: string): string => {
@@ -76,7 +71,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   };
 
   return (
-    <div className={"flex flex-col gap-6"}>
+    <div className="flex flex-col gap-6">
       <form>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
@@ -115,43 +110,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             </span>
           </div>
           <div className="flex">
-            <Button
-              variant="outline"
-              className="w-full"
-              formAction={async (data) =>
-                handleSubmit(continueWithGithub, data)
-              }
-            >
-              <FaGithub />
-              Continue with GitHub
-            </Button>
+            <ContinueWithGithubBtn handleSubmit={handleSubmit} />
             <input type="hidden" name="slug" value={slug} />
           </div>
         </div>
       </form>
-      <p className="text-center text-sm text-zinc-500">
-        {slug && (
-          <Button
-            variant="link"
-            className="self-start p-0 font-normal text-zinc-500"
-            onClick={() => setCurrentStep?.(ClaimLinkStep.CHECK_LINK)}
-          >
-            go back
-          </Button>
-        )}
-        {" or "}
-        <Button
-          asChild
-          variant="link"
-          className="p-0 font-normal text-zinc-500"
-        >
-          {!slug ? (
-            <Link href="/signup">sign up</Link>
-          ) : (
-            <Link href="/login">login</Link>
-          )}
-        </Button>
-      </p>
+      <AuthOptions
+        signup={slug !== undefined}
+        setCurrentStep={setCurrentStep}
+      />
     </div>
   );
 };

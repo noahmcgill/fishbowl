@@ -5,6 +5,11 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 
+/**
+ * Creates a page for a user. User must be authenticated.
+ * GET method is used here because Next Auth expects this
+ * as a target for the `newUser` page.
+ */
 export const GET = auth(async function GET(req) {
   if (!req.auth) {
     return NextResponse.json({ message: "Not authenticated" }, { status: 401 });

@@ -2,7 +2,7 @@
 
 import { useDebounce } from "@/lib/hooks/useDebounce";
 import { useEffect, useState } from "react";
-import { LoginForm } from "@/components/auth/login-form";
+import { AuthForm } from "@/components/auth/auth-form";
 import { ClaimLinkForm } from "./claim-link-form";
 import { ClaimLinkStep } from "./types";
 
@@ -22,7 +22,7 @@ export const ClaimLinkView = () => {
   }, [input]);
 
   if (currentStep === ClaimLinkStep.LOGIN) {
-    return <LoginForm slug={slug} setCurrentStep={setCurrentStep} />;
+    return <AuthForm slug={slug} setCurrentStep={setCurrentStep} />;
   }
 
   return (

@@ -6,9 +6,5 @@ export const resolveUserPage = async (userId: string) => {
     id: userId,
   });
 
-  if (!page) {
-    redirect("/start");
-  } else {
-    redirect(`/p/${page.slug}`);
-  }
+  redirect(`/${page?.slug}`);
 };
