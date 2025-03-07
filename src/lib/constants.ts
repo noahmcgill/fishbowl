@@ -38,3 +38,7 @@ export const imageMimeTypeRegex = new RegExp(
 
 // URL-safe slug (lowercase letters, numbers, and hyphens)
 export const urlSafeSlugRegex = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+export const metadataDomPurifyConfig = {
+  ALLOWED_TAGS: ["b", "i", "p"],
+};

@@ -9,12 +9,19 @@ import { pageService } from "../services/page";
 import { TRPCError } from "@trpc/server";
 import {
   imageMimeTypeRegex,
+  metadataDomPurifyConfig,
   TRPCErrorCode,
   urlSafeSlugRegex,
 } from "@/lib/constants";
+import DOMPurify from "isomorphic-dompurify";
 
 const getErrorMsg = (route: string, msg: string) => {
   return `[PageRouter.${route}]: ${msg}`;
+};
+
+const sanitizeStrOrNull = (str: string | null) => {
+  if (!str || str === "") return null;
+  return DOMPurify.sanitize(str, metadataDomPurifyConfig);
 };
 
 export const pageRouter = createTRPCRouter({
@@ -199,6 +206,49 @@ export const pageRouter = createTRPCRouter({
           message: getErrorMsg(
             "updatePageImageUrl",
             "unexpected error occurred updating the user's profile image",
+          ),
+        });
+      }
+    }),
+
+  updatePageMetadata: protectedProcedure
+    .input(
+      z.object({
+        pageId: z.string().cuid(),
+        metadata: z.object({
+          name: z.string().nullable(),
+          desc: z.string().nullable(),
+        }),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userPage = await pageService.getFirstForUser(ctx.session.user.id);
+        if (!userPage || userPage.id !== input.pageId) {
+          throw new TRPCError({
+            code: TRPCErrorCode.FORBIDDEN,
+            message: getErrorMsg(
+              "updatePageMetadata",
+              "user is attempting to modify a page that is not theirs",
+            ),
+          });
+        }
+
+        const sanitizedName = sanitizeStrOrNull(input.metadata.name);
+        const sanitizedDesc = sanitizeStrOrNull(input.metadata.desc);
+
+        return await pageService.updatePageMetadata(input.pageId, {
+          name: sanitizedName,
+          desc: sanitizedDesc,
+        });
+      } catch (e) {
+        console.log(e);
+        if (e instanceof TRPCError) throw e;
+        throw new TRPCError({
+          code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
+          message: getErrorMsg(
+            "updatePageMetadata",
+            "unexpected error occurred updating the user's page metadata",
           ),
         });
       }

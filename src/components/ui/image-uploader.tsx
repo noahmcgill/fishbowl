@@ -26,7 +26,7 @@ export const ImageUploader: React.FC<ImageUploadProps> = ({
 
   return (
     <div
-      className="relative h-48 w-48"
+      className="relative h-32 w-32 md:h-48 md:w-48"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -51,7 +51,9 @@ export const ImageUploader: React.FC<ImageUploadProps> = ({
         </Avatar>
       </label>
       {image && isHovered ? (
-        <div className={`absolute bottom-4 flex w-full justify-between px-2`}>
+        <div
+          className={`absolute bottom-0 flex w-full justify-between px-2 md:bottom-4`}
+        >
           <Button
             variant="outline"
             className="rounded-full bg-white p-2 shadow-md"

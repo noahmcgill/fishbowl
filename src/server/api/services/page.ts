@@ -103,6 +103,22 @@ export class PageService {
       data: { imageUrl: url },
     });
   }
+
+  async updatePageMetadata(
+    pageId: string,
+    metadata: {
+      name: string | null;
+      desc: string | null;
+    },
+  ): Promise<void> {
+    await db.page.update({
+      where: { id: pageId },
+      data: {
+        name: metadata.name,
+        description: metadata.desc,
+      },
+    });
+  }
 }
 
 export const pageService = new PageService();

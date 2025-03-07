@@ -30,7 +30,7 @@ export const GET = auth(async function GET(req) {
     data: {
       userId: req.auth.user.id,
       slug,
-      name: slug,
+      name: "My Page",
     },
   });
 
