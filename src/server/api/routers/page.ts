@@ -13,6 +13,10 @@ import {
   urlSafeSlugRegex,
 } from "@/lib/constants";
 
+const getErrorMsg = (route: string, msg: string) => {
+  return `[PageRouter.${route}]: ${msg}`;
+};
+
 export const pageRouter = createTRPCRouter({
   getFirstForUser: protectedProcedure.query(async ({ ctx }) => {
     try {
@@ -21,7 +25,10 @@ export const pageRouter = createTRPCRouter({
       console.error(e);
       throw new TRPCError({
         code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
-        message: "There was an unexpected error retrieving the page",
+        message: getErrorMsg(
+          "getFirstForUser",
+          "unexpected error retrieving user page",
+        ),
       });
     }
   }),
@@ -44,8 +51,7 @@ export const pageRouter = createTRPCRouter({
         if (page) {
           throw new TRPCError({
             code: TRPCErrorCode.UNPROCESSABLE_CONTENT,
-            message:
-              "The page was not created because one already exists for this user",
+            message: getErrorMsg("create", "page already exists for user"),
           });
         }
 
@@ -60,9 +66,10 @@ export const pageRouter = createTRPCRouter({
         });
       } catch (e) {
         console.error(e);
+        if (e instanceof TRPCError) throw e;
         throw new TRPCError({
           code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
-          message: "There was an unexpected error creating the page",
+          message: getErrorMsg("create", "unexpected error creating the page"),
         });
       }
     }),
@@ -76,16 +83,23 @@ export const pageRouter = createTRPCRouter({
         if (!page) {
           throw new TRPCError({
             code: TRPCErrorCode.NOT_FOUND,
-            message: "A page with this slug does not exist",
+            message: getErrorMsg(
+              "getPageBySlug",
+              "a page with this slug does not exist",
+            ),
           });
         }
 
         return page;
       } catch (e) {
         console.log(e);
+        if (e instanceof TRPCError) throw e;
         throw new TRPCError({
           code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
-          message: "An unexpected error while finding the page",
+          message: getErrorMsg(
+            "getPageBySlug",
+            "unexpected error while finding the page",
+          ),
         });
       }
     }),
@@ -97,7 +111,7 @@ export const pageRouter = createTRPCRouter({
       if (!isValidSlug) {
         throw new TRPCError({
           code: TRPCErrorCode.BAD_REQUEST,
-          message: "Invalid slug",
+          message: getErrorMsg("slugExists", "invalid slug"),
         });
       }
 
@@ -108,7 +122,10 @@ export const pageRouter = createTRPCRouter({
         console.log(e);
         throw new TRPCError({
           code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
-          message: "An unexpected error occurred while finding the page",
+          message: getErrorMsg(
+            "slugExists",
+            "unexpected error while finding the page",
+          ),
         });
       }
     }),
@@ -126,15 +143,17 @@ export const pageRouter = createTRPCRouter({
       if (input.contentLength > 10485760) {
         throw new TRPCError({
           code: TRPCErrorCode.BAD_REQUEST,
-          message:
-            "Error getting presigned URL for profile image upload: the file size must be under 10mb",
+          message: getErrorMsg(
+            "getPageImageUploadUrl",
+            "file size must be under 10mb",
+          ),
         });
       }
 
       try {
         return await pageService.getS3PresignedUrl({
           pageId: input.pageId,
-          bucketName: process.env.S3_BUCKET_NAME!,
+          bucketName: process.env.STORAGE_BUCKET_NAME!,
           contentType: input.contentType,
           contentLength: input.contentLength,
           fileName: input.fileName,
@@ -143,8 +162,10 @@ export const pageRouter = createTRPCRouter({
         console.log(e);
         throw new TRPCError({
           code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
-          message:
-            "An unexpected error occurred while retrieving the presigned URL for image upload from object storage",
+          message: getErrorMsg(
+            "getPageImageUploadUrl",
+            "unexpected error generating presigned URL",
+          ),
         });
       }
     }),
@@ -152,21 +173,33 @@ export const pageRouter = createTRPCRouter({
   updatePageImageUrl: protectedProcedure
     .input(
       z.object({
-        url: z.string().url(),
+        pageId: z.string().cuid(),
+        url: z.string().url().nullable(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
       try {
-        return await pageService.updatePageImageUrl(
-          ctx.session.user.id,
-          input.url,
-        );
+        const userPage = await pageService.getFirstForUser(ctx.session.user.id);
+        if (!userPage || userPage.id !== input.pageId) {
+          throw new TRPCError({
+            code: TRPCErrorCode.FORBIDDEN,
+            message: getErrorMsg(
+              "updatePageImageUrl",
+              "user is attempting to modify a page that is not theirs",
+            ),
+          });
+        }
+
+        return await pageService.updatePageImageUrl(input.pageId, input.url);
       } catch (e) {
         console.log(e);
+        if (e instanceof TRPCError) throw e;
         throw new TRPCError({
           code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
-          message:
-            "An unexpected error occurred while updating the user's profile image",
+          message: getErrorMsg(
+            "updatePageImageUrl",
+            "unexpected error occurred updating the user's profile image",
+          ),
         });
       }
     }),

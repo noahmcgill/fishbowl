@@ -89,7 +89,7 @@ export class PageService {
       { expiresIn: 60 },
     );
 
-    const publicUrl = `${process.env.S3_PUBLIC_URL}/${pageId}/${fileName}`;
+    const publicUrl = `${process.env.STORAGE_PUBLIC_URL}/${pageId}/${fileName}`;
 
     return {
       presignedUrl: res,
@@ -97,10 +97,10 @@ export class PageService {
     };
   }
 
-  async updatePageImageUrl(userId: string, url: string): Promise<void> {
-    await db.user.update({
-      where: { id: userId },
-      data: { image: url },
+  async updatePageImageUrl(pageId: string, url: string | null): Promise<void> {
+    await db.page.update({
+      where: { id: pageId },
+      data: { imageUrl: url },
     });
   }
 }

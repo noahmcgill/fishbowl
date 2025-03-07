@@ -3,11 +3,11 @@ import { env } from "@/env";
 
 const createS3Client = () =>
   new S3Client({
-    region: process.env.S3_REGION,
-    endpoint: process.env.S3_ENDPOINT,
+    region: process.env.STORAGE_REGION,
+    endpoint: process.env.STORAGE_ENDPOINT,
     credentials: {
-      accessKeyId: process.env.S3_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+      accessKeyId: process.env.STORAGE_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.STORAGE_SECRET_ACCESS_KEY!,
     },
   });
 

@@ -12,19 +12,6 @@ import {
 import { type TRPCError } from "@trpc/server";
 import { toast } from "sonner";
 
-/**
- * To do
- * - update image url in user's profile
- * - clean up UI
- * - image is corrupt in cloudflare
- * - switch to avatar or view only state?
- * - refresh session object when image is uploaded
- * - add to readme about nextjs image config
- * - cut down on s3 env vars?
- * - check out all the client side re-renders
- * - fix lint errors
- */
-
 interface UserProfileImageProps {
   pageId: string;
   existingImageUrl: string | null;
@@ -35,15 +22,17 @@ export const UserProfileImage: React.FC<UserProfileImageProps> = ({
   existingImageUrl,
 }) => {
   const [image, setImage] = useState<string | null>(existingImageUrl);
-  const [isImageReset, setIsImageReset] = useState<boolean>(false);
 
-  const { mutateAsync: getPresignedUrl, isPending: isGetPresignedUrlPending } =
+  const { mutateAsync: getPresignedUrl } =
     api.page.getPageImageUploadUrl.useMutation();
-  const { mutateAsync: uploadFile, isPending: isUploadFilePending } =
-    useMutation<FileUploadResponse, TRPCError, FileUploadInput>({
-      mutationFn: uploadFileToS3,
-    });
-  const { mutateAsync: updatePageUrl, isPending: isUpdatePageUrlPending } =
+  const { mutateAsync: uploadFile } = useMutation<
+    FileUploadResponse,
+    TRPCError,
+    FileUploadInput
+  >({
+    mutationFn: uploadFileToS3,
+  });
+  const { mutateAsync: updatePageImageUrl } =
     api.page.updatePageImageUrl.useMutation();
 
   const handleImageChange = async (
@@ -57,6 +46,8 @@ export const UserProfileImage: React.FC<UserProfileImageProps> = ({
       return;
     }
 
+    const arrayBuffer = await selectedFile.arrayBuffer();
+
     const reader = new FileReader();
     reader.onload = async (e) => {
       const imageDataUrl = e.target?.result as string;
@@ -66,25 +57,23 @@ export const UserProfileImage: React.FC<UserProfileImageProps> = ({
           pageId,
           fileName: selectedFile.name,
           contentType: selectedFile.type,
-          contentLength: imageDataUrl.length,
+          contentLength: selectedFile.size,
         });
 
         if (!presignedUrl) throw new Error("Failed to get presigned URL.");
 
         await uploadFile({
-          file: imageDataUrl,
+          file: new Blob([arrayBuffer], { type: selectedFile.type }),
           presignedUrl,
-          contentType: selectedFile.type,
         });
 
-        await updatePageUrl({ url: publicUrl });
+        await updatePageImageUrl({ pageId, url: publicUrl });
 
         toast.success("Image uploaded successfully!");
 
-        setIsImageReset(true);
         setImage(imageDataUrl);
       } catch (e) {
-        console.error(e); // @todo: remove me
+        console.log(e);
         toast.error(
           "An error occurred while uploading your image. Please try again.",
         );
@@ -94,20 +83,14 @@ export const UserProfileImage: React.FC<UserProfileImageProps> = ({
     reader.readAsDataURL(selectedFile);
   };
 
-  const resetImageState = () => {
+  const resetImageState = async () => {
+    await updatePageImageUrl({ pageId, url: null });
     setImage(null);
-    setIsImageReset(true);
   };
 
   return (
     <ImageUploader
       image={image}
-      isPending={
-        isGetPresignedUrlPending ||
-        isUploadFilePending ||
-        isUpdatePageUrlPending
-      }
-      displayRaw={isImageReset}
       handleRemoveImage={resetImageState}
       handleImageChange={handleImageChange}
     />

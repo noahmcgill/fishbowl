@@ -39,7 +39,7 @@ export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
   );
 
   const isUnexpectedError = (httpStatus?: number): boolean => {
-    return httpStatus !== 400;
+    return !!httpStatus && httpStatus !== 400;
   };
 
   return (
@@ -56,14 +56,14 @@ export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
           </div>
           <div className="relative">
             <span className="absolute inset-y-0 left-3 flex items-center text-sm text-zinc-800">
-              fishbowl.org/
+              fishbowl.fyi/
             </span>
             <Input
               id="slug"
               type="text"
               name="slug"
               placeholder="your-company"
-              className="pl-[114px]"
+              className="pl-[94px]"
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />

@@ -45,6 +45,26 @@ Copy the sample environment variable file to `.env` and add the values specific 
 cp .env.example .env
 ```
 
+### Add remote pattern for storage URL to `next.config.js`
+
+In order to load external images from your object storage bucket or CDN, you'll need to add the host and configuration options as a `remotePattern` in `next.config.js`. For example:
+
+```javascript
+const config = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "pub-c16693714c434e46b8963619a75e3cd2.r2.dev",
+        port: "",
+      },
+    ],
+  },
+};
+```
+
+Read more about remote patterns in Next.js [here](https://nextjs.org/docs/pages/api-reference/components/image#remotepatterns).
+
 ### Start your database
 
 However you choose to do so! I use the PostgreSQL desktop app when developing locally.

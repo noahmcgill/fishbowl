@@ -10,12 +10,6 @@ const config = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "avatars.githubusercontent.com",
-        port: "",
-        pathname: "/u/**",
-      },
-      {
-        protocol: "https",
         hostname: "pub-c16693714c434e46b8963619a75e3cd2.r2.dev",
         port: "",
       },

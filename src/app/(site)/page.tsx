@@ -1,5 +1,6 @@
 import { resolveUserPage } from "@/lib/utils/server/routing";
 import { auth } from "@/server/auth";
+import { redirect } from "next/navigation";
 
 /**
  * App home page. If there's no session, the marketing page is displayed.
@@ -10,6 +11,8 @@ export default async function Home() {
 
   if (session) {
     await resolveUserPage();
+  } else {
+    redirect("/login");
   }
 
   return (
