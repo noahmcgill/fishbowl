@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LuUpload } from "react-icons/lu";
 import { inputFormattedMimeTypes } from "@/lib/constants";
-import Image, { ImageProps } from "next/image";
 import { ImageUploaderPreview } from "./image-uploader-preview";
 
 interface ImageUploadProps {

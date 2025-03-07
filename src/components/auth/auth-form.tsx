@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { ContinueWithMagicLinkBtn } from "./continue-with-magic-link-btn";
-import { ClaimLinkStep } from "../claim-link/types";
 import { SLUG_COOKIE_NAME } from "@/lib/constants";
 import Cookies from "js-cookie";
 import { ContinueWithGithubBtn } from "./continue-with-github-btn";
@@ -14,10 +13,9 @@ import { AuthOptions } from "./auth-options";
 
 interface AuthFormProps {
   slug?: string;
-  setCurrentStep?: (step: ClaimLinkStep) => void;
 }
 
-export const AuthForm: React.FC<AuthFormProps> = ({ slug, setCurrentStep }) => {
+export const AuthForm: React.FC<AuthFormProps> = ({ slug }) => {
   const searchParams = useSearchParams();
 
   const getErrorMsg = (error: string): string => {
@@ -67,7 +65,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ slug, setCurrentStep }) => {
       });
     }
 
-    action(formData);
+    await action(formData);
   };
 
   return (

@@ -5,11 +5,11 @@ import { api } from "@/trpc/react";
 import { useMutation } from "@tanstack/react-query";
 import { ImageUploader } from "../ui/image-uploader";
 import {
-  FileUploadInput,
-  FileUploadResponse,
+  type FileUploadInput,
+  type FileUploadResponse,
   uploadFileToS3,
 } from "@/lib/utils/client/s3";
-import { TRPCError } from "@trpc/server";
+import { type TRPCError } from "@trpc/server";
 import { toast } from "sonner";
 
 /**
@@ -20,6 +20,9 @@ import { toast } from "sonner";
  * - switch to avatar or view only state?
  * - refresh session object when image is uploaded
  * - add to readme about nextjs image config
+ * - cut down on s3 env vars?
+ * - check out all the client side re-renders
+ * - fix lint errors
  */
 
 interface UserProfileImageProps {

@@ -2,7 +2,6 @@
 
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { ClaimLinkStep } from "../claim-link/types";
 import { useRouter } from "next/navigation";
 
 interface AuthOptionsProps {

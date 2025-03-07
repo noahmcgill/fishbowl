@@ -5,7 +5,7 @@ import { FaGithub } from "react-icons/fa";
 
 interface ContinueWithGithubBtnProps {
   handleSubmit: (
-    action: (formData: FormData) => Promise<void>,
+    action: (formData?: FormData) => Promise<void>,
     formData: FormData,
   ) => Promise<void>;
 }

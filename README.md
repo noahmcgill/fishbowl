@@ -12,7 +12,7 @@ Transparify is a little like LinkTree, but for displaying startup metrics. Inspi
 - [Prisma](https://prisma.io) - ORM [![Made with Prisma](https://made-with.prisma.io/dark.svg)](https://prisma.io)
 - [Auth.js](https://authjs.dev/) – Authentication 
 - [Resend](https://resend.com) - Email Sending
-- S3-Compatible Object Storage - File Storage ([Cloudflare R2](https://www.cloudflare.com/developer-platform/products/r2/) is recommended)
+- [AWS S3](https://aws.amazon.com/s3/) - Object Storage (any other solution that is compatible with the S3 API should also work, e.g. [Cloudflare R2](https://www.cloudflare.com/developer-platform/products/r2/) or [Vercel Blob](https://vercel.com/docs/vercel-blob))
 
 ## Getting Started
 
@@ -22,6 +22,8 @@ Here's what you need to run Transparify:
 
 * Node.js (version >= 20.0.0)
 * PostgreSQL Database
+* Public Storage Bucket (AWS S3 / Cloudflare R2 / Vercel Blob / Other S3-Compatible Storage)
+* Resend Project
 
 ### Clone the repository
 

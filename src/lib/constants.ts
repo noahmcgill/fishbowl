@@ -20,7 +20,7 @@ export const profileImageAcceptedMimeTypes = [
 ];
 
 export const inputFormattedMimeTypes = profileImageAcceptedMimeTypes.reduce(
-  (acc, curr, i, arr) => {
+  (acc, curr, i) => {
     const fullCurr = `image/${curr}`;
 
     if (i === 0) {

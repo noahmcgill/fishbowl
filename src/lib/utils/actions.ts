@@ -1,12 +1,11 @@
 "use server";
 
 import { signIn, signOut } from "@/server/auth";
-import Cookies from "js-cookie";
 import { redirect } from "next/navigation";
 import { SLUG_COOKIE_NAME } from "../constants";
 import { cookies } from "next/headers";
 
-export const continueWithGithub = async (formData: FormData) => {
+export const continueWithGithub = async () => {
   await signIn("github", {
     redirectTo: "/",
   });

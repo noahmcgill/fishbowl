@@ -10,7 +10,6 @@ import { useDebounce } from "@/lib/hooks/useDebounce";
 import { useEffect, useState } from "react";
 import { claim } from "@/lib/utils/actions";
 import { ClaimLinkBtn } from "./claim-link-btn";
-import { TRPCClientErrorLike } from "@trpc/client";
 
 interface ClaimLinkFormProps {
   initialSlug?: string;
@@ -39,10 +38,8 @@ export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
     },
   );
 
-  const isUnexpectedError = (
-    error: TRPCClientErrorLike<any> | null,
-  ): boolean => {
-    return !!error && error.data.httpStatus !== 400;
+  const isUnexpectedError = (httpStatus?: number): boolean => {
+    return httpStatus !== 400;
   };
 
   return (
@@ -80,7 +77,7 @@ export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
             </span>
           </div>
         </div>
-        {isUnexpectedError(error) && (
+        {isUnexpectedError(error?.data?.httpStatus) && (
           <p className="text-sm text-red-500">
             An unexpected error occured. Please try again.
           </p>

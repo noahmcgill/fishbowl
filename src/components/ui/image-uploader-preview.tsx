@@ -1,4 +1,4 @@
-import Image, { ImageProps } from "next/image";
+import Image, { type ImageProps } from "next/image";
 
 interface ImageUploaderPreviewProps extends ImageProps {
   useNextTag?: boolean;
@@ -8,12 +8,13 @@ interface ImageUploaderPreviewProps extends ImageProps {
 export const ImageUploaderPreview: React.FC<ImageUploaderPreviewProps> = ({
   useNextTag = false,
   src,
+  alt,
   priority,
   ...props
 }) => {
   if (useNextTag) {
-    return <Image src={src} priority={priority} {...props} />;
+    return <Image alt={alt} src={src} priority={priority} {...props} />;
   }
 
-  return <img src={src} {...props} />;
+  return <img src={src} alt={alt} {...props} />;
 };
