@@ -7,7 +7,7 @@ export enum TRPCErrorCode {
   UNPROCESSABLE_CONTENT = "UNPROCESSABLE_CONTENT",
 }
 
-export const SLUG_COOKIE_NAME = "transparify.signup.slug";
+export const SLUG_COOKIE_NAME = "fishbowl.signup.slug";
 
 export const profileImageAcceptedMimeTypes = [
   "apng",

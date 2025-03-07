@@ -74,7 +74,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ slug }) => {
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
             <h1 className="text-2xl font-medium">
-              {!slug ? "Login to transparify" : "One last step!"}
+              {!slug ? "Login to fishbowl" : "One last step!"}
             </h1>
             <div className="text-center text-sm">
               {!slug ? (

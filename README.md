@@ -1,6 +1,6 @@
-# Transparify - for Open Startups
+# FishBowl - for Open Startups
 
-Transparify is a little like LinkTree, but for displaying startup metrics. Inspired by [Open Startup List](https://openstartuplist.com/) and many of the startups listed on their website, it allows founders to easily stand up and share a page that displays their startup's metrics via widgets.
+FishBowl is a little like LinkTree, but for displaying startup metrics. Inspired by [Open Startup List](https://openstartuplist.com/) and many of the startups listed on their website, it allows founders to easily stand up and share a page that displays their startup's metrics via widgets.
 
 ## Tech Stack
 
@@ -18,7 +18,7 @@ Transparify is a little like LinkTree, but for displaying startup metrics. Inspi
 
 ### Prerequisites
 
-Here's what you need to run Transparify:
+Here's what you need to run FishBowl:
 
 * Node.js (version >= 20.0.0)
 * PostgreSQL Database
@@ -28,7 +28,7 @@ Here's what you need to run Transparify:
 ### Clone the repository
 
 ```bash
-git clone https://github.com/noahmcgill/transparify.git
+git clone https://github.com/noahmcgill/fishbowl.git
 ```
 
 ### Install dependencies

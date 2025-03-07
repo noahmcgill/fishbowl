@@ -9,7 +9,7 @@ import { IoMdAlert, IoMdCheckmarkCircle } from "react-icons/io";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const metadata: Metadata = {
-  title: "Transparify - Share your project's metrics",
+  title: "FishBowl - Share your project's metrics",
   description:
     "Foster transparency. Share your project's metrics with the world.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],

@@ -56,7 +56,7 @@ export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
           </div>
           <div className="relative">
             <span className="absolute inset-y-0 left-3 flex items-center text-sm text-zinc-800">
-              transparify.org/
+              fishbowl.org/
             </span>
             <Input
               id="slug"

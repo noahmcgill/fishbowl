@@ -1,7 +1,7 @@
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Transparify - Create your page",
+  title: "FishBowl - Create your page",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
