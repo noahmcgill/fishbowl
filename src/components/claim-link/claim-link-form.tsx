@@ -9,9 +9,8 @@ import Link from "next/link";
 import { useDebounce } from "@/lib/hooks/useDebounce";
 import { useEffect, useState } from "react";
 import { claim } from "@/lib/utils/actions";
-import { useFormStatus } from "react-dom";
-import { LuLoader } from "react-icons/lu";
 import { ClaimLinkBtn } from "./claim-link-btn";
+import { TRPCClientErrorLike } from "@trpc/client";
 
 interface ClaimLinkFormProps {
   initialSlug?: string;
@@ -39,6 +38,12 @@ export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
       staleTime: 0,
     },
   );
+
+  const isUnexpectedError = (
+    error: TRPCClientErrorLike<any> | null,
+  ): boolean => {
+    return !!error && error.data.httpStatus !== 400;
+  };
 
   return (
     <form action={claim}>
@@ -69,13 +74,13 @@ export const ClaimLinkForm: React.FC<ClaimLinkFormProps> = ({
               <ClaimLinkStatusIcon
                 initialized={inputHasChanged}
                 disabled={input === ""}
-                slugExists={data ?? false}
+                slugExists={data || error?.data?.httpStatus === 400}
                 isLoading={isLoading || isDebouncing}
               />
             </span>
           </div>
         </div>
-        {error && (
+        {isUnexpectedError(error) && (
           <p className="text-sm text-red-500">
             An unexpected error occured. Please try again.
           </p>

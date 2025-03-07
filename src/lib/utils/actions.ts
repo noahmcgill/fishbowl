@@ -31,7 +31,9 @@ export const continueWithMagicLink = async (formData: FormData) => {
 };
 
 export const logout = async () => {
-  await signOut();
+  await signOut({
+    redirectTo: "/login",
+  });
 };
 
 export const claim = async (formData: FormData) => {

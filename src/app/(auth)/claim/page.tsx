@@ -1,4 +1,4 @@
-import { ClaimLinkForm } from "@/components/ui/claim-link/claim-link-form";
+import { ClaimLinkForm } from "@/components/claim-link/claim-link-form";
 import { SLUG_COOKIE_NAME } from "@/lib/constants";
 import { cookies } from "next/headers";
 

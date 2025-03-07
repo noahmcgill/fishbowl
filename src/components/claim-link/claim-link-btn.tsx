@@ -1,5 +1,5 @@
 import { useFormStatus } from "react-dom";
-import { Button } from "../button";
+import { Button } from "../ui/button";
 import { LuLoader } from "react-icons/lu";
 
 interface ClaimLinkBtnProps {

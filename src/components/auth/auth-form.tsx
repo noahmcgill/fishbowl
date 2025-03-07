@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { ContinueWithMagicLinkBtn } from "./continue-with-magic-link-btn";
-import { ClaimLinkStep } from "../ui/claim-link/types";
+import { ClaimLinkStep } from "../claim-link/types";
 import { SLUG_COOKIE_NAME } from "@/lib/constants";
 import Cookies from "js-cookie";
 import { ContinueWithGithubBtn } from "./continue-with-github-btn";

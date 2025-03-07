@@ -12,6 +12,7 @@ Transparify is a little like LinkTree, but for displaying startup metrics. Inspi
 - [Prisma](https://prisma.io) - ORM [![Made with Prisma](https://made-with.prisma.io/dark.svg)](https://prisma.io)
 - [Auth.js](https://authjs.dev/) – Authentication 
 - [Resend](https://resend.com) - Email Sending
+- S3-Compatible Object Storage - File Storage ([Cloudflare R2](https://www.cloudflare.com/developer-platform/products/r2/) is recommended)
 
 ## Getting Started
 

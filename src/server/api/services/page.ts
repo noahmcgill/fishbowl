@@ -1,5 +1,8 @@
 import { db } from "@/server/db";
 import { type Page } from "@prisma/client";
+import { s3 } from "@/server/clients/s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 interface CreatePageInput {
   userId: string;
@@ -9,6 +12,19 @@ interface CreatePageInput {
   companyUrl?: string;
   imageUrl?: string;
   color?: string;
+}
+
+interface GetS3PresignedUrlInput {
+  pageId: string;
+  fileName: string;
+  bucketName: string;
+  contentType: string;
+  contentLength: number;
+}
+
+interface GetS3PresignedUrlOutput {
+  presignedUrl: string;
+  publicUrl: string;
 }
 
 export class PageService {
@@ -52,6 +68,39 @@ export class PageService {
   async getPageBySlug(slug: string): Promise<Page | null> {
     return await db.page.findUnique({
       where: { slug },
+    });
+  }
+
+  async getS3PresignedUrl({
+    bucketName,
+    pageId,
+    fileName,
+    contentType,
+    contentLength,
+  }: GetS3PresignedUrlInput): Promise<GetS3PresignedUrlOutput> {
+    const res = await getSignedUrl(
+      s3,
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: `${pageId}/${fileName}`,
+        ContentType: contentType,
+        ContentLength: contentLength,
+      }),
+      { expiresIn: 60 },
+    );
+
+    const publicUrl = `${process.env.S3_PUBLIC_URL}/${pageId}/${fileName}`;
+
+    return {
+      presignedUrl: res,
+      publicUrl,
+    };
+  }
+
+  async updatePageImageUrl(userId: string, url: string): Promise<void> {
+    await db.user.update({
+      where: { id: userId },
+      data: { image: url },
     });
   }
 }

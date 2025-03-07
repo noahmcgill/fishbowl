@@ -1,5 +1,5 @@
 import { LuCircleAlert, LuCircleCheck, LuLoader } from "react-icons/lu";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface ClaimLinkStatusIconProps {
   initialized: boolean;

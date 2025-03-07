@@ -9,7 +9,7 @@ export default async function Home() {
   const session = await auth();
 
   if (session) {
-    await resolveUserPage(session.user.id);
+    await resolveUserPage();
   }
 
   return (
