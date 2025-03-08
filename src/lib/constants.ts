@@ -40,5 +40,8 @@ export const imageMimeTypeRegex = new RegExp(
 export const urlSafeSlugRegex = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 export const metadataDomPurifyConfig = {
-  ALLOWED_TAGS: ["b", "i", "p"],
+  ALLOWED_TAGS: ["b", "i", "p", "br", "div"],
 };
+
+export const METADATA_NAME_SANITIZED_MAX_LENGTH = 255;
+export const METADATA_DESC_SANITIZED_MAX_LENGTH = 1000;

@@ -9,6 +9,8 @@ import { pageService } from "../services/page";
 import { TRPCError } from "@trpc/server";
 import {
   imageMimeTypeRegex,
+  METADATA_DESC_SANITIZED_MAX_LENGTH,
+  METADATA_NAME_SANITIZED_MAX_LENGTH,
   metadataDomPurifyConfig,
   TRPCErrorCode,
   urlSafeSlugRegex,
@@ -22,6 +24,23 @@ const getErrorMsg = (route: string, msg: string) => {
 const sanitizeStrOrNull = (str: string | null) => {
   if (!str || str === "") return null;
   return DOMPurify.sanitize(str, metadataDomPurifyConfig);
+};
+
+const isMetadataSanitizedLengthValid = (
+  name: string | null,
+  desc: string | null,
+): boolean => {
+  const nameSanitizedLength = DOMPurify.sanitize(name ?? "", {
+    ALLOWED_TAGS: [],
+  }).replace(/&nbsp;/g, " ").length;
+  const descSanitizedLength = DOMPurify.sanitize(desc ?? "", {
+    ALLOWED_TAGS: [],
+  }).replace(/&nbsp;/g, " ").length;
+
+  return (
+    nameSanitizedLength > METADATA_NAME_SANITIZED_MAX_LENGTH &&
+    descSanitizedLength > METADATA_DESC_SANITIZED_MAX_LENGTH
+  );
 };
 
 export const pageRouter = createTRPCRouter({
@@ -211,6 +230,8 @@ export const pageRouter = createTRPCRouter({
       }
     }),
 
+  // Takes rich text for metadata fields, checks for a character limit by sanitizing tags,
+  // runs another sanitation of unwanted tags (but keeps rich text format), and persists changes.
   updatePageMetadata: protectedProcedure
     .input(
       z.object({
@@ -234,6 +255,23 @@ export const pageRouter = createTRPCRouter({
           });
         }
 
+        // Check the metadata field lengths without tags or space codes
+        if (
+          isMetadataSanitizedLengthValid(
+            input.metadata.name,
+            input.metadata.desc,
+          )
+        ) {
+          throw new TRPCError({
+            code: TRPCErrorCode.BAD_REQUEST,
+            message: getErrorMsg(
+              "updatePageMetadata",
+              "max length on one or more of the page metadata fields exceeded",
+            ),
+          });
+        }
+
+        // Perform sanitation on the strings that will be persisted
         const sanitizedName = sanitizeStrOrNull(input.metadata.name);
         const sanitizedDesc = sanitizeStrOrNull(input.metadata.desc);
 

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/trpc/react";
 import { ClaimLinkStatusIcon } from "./claim-link-status-icon";
 import Link from "next/link";
-import { useDebounce } from "@/lib/hooks/useDebounce";
+import { useDebounce } from "@/lib/hooks/use-debounce";
 import { useEffect, useState } from "react";
 import { claim } from "@/lib/utils/actions";
 import { ClaimLinkBtn } from "./claim-link-btn";

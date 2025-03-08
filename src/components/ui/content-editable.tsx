@@ -1,3 +1,4 @@
+import { useMaxLengthFromRichText } from "@/lib/hooks/use-sanitized-max-length";
 import React, {
   type KeyboardEvent,
   type FocusEvent,
@@ -12,6 +13,8 @@ interface ContentEditableProps {
   className?: string;
   tabIndex?: number;
   role?: string;
+  placeholder?: string;
+  sanitizedMaxLength?: number;
   onChange: (e: ContentEditableEvent) => void;
   onInput?: (e: FormEvent<HTMLDivElement>) => void;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
@@ -20,7 +23,7 @@ interface ContentEditableProps {
 
 /**
  * ReactContentEditable wrapper to get the library working with state hooks,
- * courtesy of Github user `ctrlplusb`.
+ * with the help of Github user `ctrlplusb`.
  *
  * See more: https://github.com/lovasoa/react-contenteditable/issues/161#issuecomment-669633470
  */
@@ -29,12 +32,21 @@ export const ContentEditable: React.FC<ContentEditableProps> = ({
   onInput,
   onBlur,
   onKeyDown,
+  placeholder,
+  className,
+  html,
+  sanitizedMaxLength,
   ...props
 }) => {
   const onChangeRef = React.useRef(onChange);
   const onInputRef = React.useRef(onInput);
   const onBlurRef = React.useRef(onBlur);
   const onKeyDownRef = React.useRef(onKeyDown);
+
+  const { charsLeft, displayCharsLeft } = useMaxLengthFromRichText(
+    html,
+    sanitizedMaxLength,
+  );
 
   React.useEffect(() => {
     onChangeRef.current = onChange;
@@ -50,40 +62,54 @@ export const ContentEditable: React.FC<ContentEditableProps> = ({
   }, [onKeyDown]);
 
   return (
-    <ReactContentEditable
-      {...props}
-      onChange={(...args) => {
-        if (onChangeRef.current) {
-          onChangeRef.current(...args);
+    <div className="relative flex cursor-text flex-col">
+      <div
+        className={`${className} absolute z-[-1] text-zinc-200 ${placeholder && (html === "" || html === "<br>") ? "visible" : "invisible"}`}
+      >
+        {placeholder}
+      </div>
+      <ReactContentEditable
+        {...props}
+        html={html}
+        className={className}
+        onChange={(e) => {
+          if (onChangeRef.current) {
+            onChangeRef.current(e);
+          }
+        }}
+        onInput={
+          onInput
+            ? (e) => {
+                if (onInputRef.current) {
+                  onInputRef.current(e);
+                }
+              }
+            : undefined
         }
-      }}
-      onInput={
-        onInput
-          ? (e) => {
-              if (onInputRef.current) {
-                onInputRef.current(e);
+        onBlur={
+          onBlur
+            ? (e) => {
+                if (onBlurRef.current) {
+                  onBlurRef.current(e);
+                }
               }
-            }
-          : undefined
-      }
-      onBlur={
-        onBlur
-          ? (e) => {
-              if (onBlurRef.current) {
-                onBlurRef.current(e);
+            : undefined
+        }
+        onKeyDown={
+          onKeyDown
+            ? (e) => {
+                if (onKeyDownRef.current) {
+                  onKeyDownRef.current(e);
+                }
               }
-            }
-          : undefined
-      }
-      onKeyDown={
-        onKeyDown
-          ? (e) => {
-              if (onKeyDownRef.current) {
-                onKeyDownRef.current(e);
-              }
-            }
-          : undefined
-      }
-    />
+            : undefined
+        }
+      />
+      {displayCharsLeft ? (
+        <div className={`${charsLeft >= 0 ? "text-zinc-800" : "text-red-500"}`}>
+          {`${charsLeft} characters left`}
+        </div>
+      ) : null}
+    </div>
   );
 };
