@@ -45,7 +45,7 @@ export const ImageUploader: React.FC<ImageUploadProps> = ({
           <AvatarFallback className="bg-zinc-50 hover:bg-zinc-100">
             <div className="gap- flex flex-col items-center">
               <LuUpload className="h-6 w-6 text-zinc-600" />
-              <p className="font-medium text-zinc-600">Add Logo</p>
+              <p className="font-medium text-zinc-600">Add Avatar</p>
             </div>
           </AvatarFallback>
         </Avatar>

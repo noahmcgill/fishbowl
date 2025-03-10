@@ -7,9 +7,9 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 interface CreatePageInput {
   userId: string;
   slug: string;
-  name?: string;
+  title?: string;
   description?: string;
-  companyUrl?: string;
+  link?: string;
   imageUrl?: string;
   color?: string;
 }
@@ -46,9 +46,9 @@ export class PageService {
   async create({
     userId,
     slug,
-    name,
+    title,
     description,
-    companyUrl,
+    link,
     imageUrl,
     color,
   }: CreatePageInput): Promise<void> {
@@ -56,9 +56,9 @@ export class PageService {
       data: {
         userId,
         slug,
-        name,
+        title,
         description,
-        companyUrl,
+        link,
         imageUrl,
         color,
       },
@@ -107,15 +107,17 @@ export class PageService {
   async updatePageMetadata(
     pageId: string,
     metadata: {
-      name: string | null;
+      title: string | null;
       desc: string | null;
+      link: string | null;
     },
   ): Promise<void> {
     await db.page.update({
       where: { id: pageId },
       data: {
-        name: metadata.name,
+        title: metadata.title,
         description: metadata.desc,
+        link: metadata.link,
       },
     });
   }

@@ -7,31 +7,54 @@ import { api } from "@/trpc/react";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import {
   METADATA_DESC_SANITIZED_MAX_LENGTH,
-  METADATA_NAME_SANITIZED_MAX_LENGTH,
+  METADATA_TITLE_SANITIZED_MAX_LENGTH,
   metadataDomPurifyConfig,
 } from "@/lib/constants";
 import { ContentEditable } from "../ui/content-editable";
 import { type ContentEditableEvent } from "react-contenteditable";
 import { toast } from "sonner";
+import { LuLink } from "react-icons/lu";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { useMaxLengthFromRichText } from "@/lib/hooks/use-sanitized-max-length";
+import { useUrlValidation } from "@/lib/hooks/use-url-validation";
+import { CharsLeft } from "./chars-left";
 
 interface PageMetadataProps {
   page: Page;
 }
 
 export const PageMetadata: React.FC<PageMetadataProps> = ({ page }) => {
-  const [name, setName] = useState<string | null>(page.name);
+  // STATE
+  const [title, setTitle] = useState<string | null>(page.title);
   const [desc, setDesc] = useState<string | null>(page.description);
+  const [link, setLink] = useState<string | null>(page.link);
   const [inputHasChanged, setInputHasChanged] = useState<boolean>(false);
 
-  const [debouncedName] = useDebounce(name, 1000);
+  // CUSTOM HOOKS
+  const [debouncedTitle] = useDebounce(title, 1000);
   const [debouncedDesc] = useDebounce(desc, 1000);
+  const [debouncedLink] = useDebounce(link, 1000);
+
+  const {
+    charsLeft: titleCharsLeft,
+    displayCharsLeft: displayTitleCharsLeft,
+    isPastMaxLength: isTitlePastMaxLength,
+  } = useMaxLengthFromRichText(
+    title ?? "",
+    METADATA_TITLE_SANITIZED_MAX_LENGTH,
+  );
+  const {
+    charsLeft: descCharsLeft,
+    displayCharsLeft: displayDescCharsLeft,
+    isPastMaxLength: isDescPastMaxLength,
+  } = useMaxLengthFromRichText(desc ?? "", METADATA_DESC_SANITIZED_MAX_LENGTH);
+  const isUrlValid = useUrlValidation(link);
 
   const sanitizeAndSetContent = (
     e: ContentEditableEvent,
     setter: React.Dispatch<React.SetStateAction<string | null>>,
   ) => {
-    if (!inputHasChanged) setInputHasChanged(true);
-
     const rawContent = e.target.value;
     const sanitizedContent =
       rawContent === "" || rawContent === "<br>"
@@ -41,14 +64,7 @@ export const PageMetadata: React.FC<PageMetadataProps> = ({ page }) => {
   };
 
   const { mutate } = api.page.updatePageMetadata.useMutation({
-    onError: (e) => {
-      if (e.data?.httpStatus === 400) {
-        toast.error(
-          "Page details couldn't be saved because one or more fields is over the character limit.",
-        );
-        return;
-      }
-
+    onError: () => {
       toast.error(
         "An unexpected error occurred while saving page details. Please try again.",
       );
@@ -56,29 +72,39 @@ export const PageMetadata: React.FC<PageMetadataProps> = ({ page }) => {
   });
 
   useEffect(() => {
-    if (inputHasChanged) {
-      mutate({
-        pageId: page.id,
-        metadata: {
-          name: debouncedName,
-          desc: debouncedDesc,
-        },
-      });
+    if (!inputHasChanged) {
+      setInputHasChanged(true);
+      return;
     }
+
+    if (!isUrlValid || isTitlePastMaxLength || isDescPastMaxLength) {
+      toast.error("Page could not be saved because some fields are invalid.");
+      return;
+    }
+
+    mutate({
+      pageId: page.id,
+      metadata: {
+        title: debouncedTitle,
+        desc: debouncedDesc,
+        link: debouncedLink,
+      },
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedName, debouncedDesc, mutate, page]);
+  }, [debouncedTitle, debouncedDesc, debouncedLink, mutate, page]);
 
   return (
-    <div className="flex flex-col gap-0">
+    <div className="flex flex-col">
       <ContentEditable
-        html={name ?? ""}
-        placeholder="Page Name"
-        onChange={(e) => sanitizeAndSetContent(e, setName)}
+        html={title ?? ""}
+        placeholder="Page Title"
+        onChange={(e) => sanitizeAndSetContent(e, setTitle)}
         className="text-[32px] font-bold leading-[120%] tracking-[-1px] xl:text-[44px] xl:tracking-[-2px]"
         role="textbox"
         tabIndex={0}
-        sanitizedMaxLength={METADATA_NAME_SANITIZED_MAX_LENGTH}
       />
+      {displayTitleCharsLeft && <CharsLeft charsLeft={titleCharsLeft} />}
       <ContentEditable
         className="mt-3 text-zinc-600 md:text-xl xl:mt-3"
         placeholder="Page bio..."
@@ -86,8 +112,24 @@ export const PageMetadata: React.FC<PageMetadataProps> = ({ page }) => {
         onChange={(e) => sanitizeAndSetContent(e, setDesc)}
         html={desc ?? ""}
         tabIndex={0}
-        sanitizedMaxLength={METADATA_DESC_SANITIZED_MAX_LENGTH}
       />
+      {displayDescCharsLeft && <CharsLeft charsLeft={descCharsLeft} />}
+      <div className="mt-2 flex items-center gap-2">
+        <Label htmlFor="link">
+          <LuLink className="h-4 w-4 text-zinc-400" />
+        </Label>
+        <Input
+          type="text"
+          id="link"
+          value={link ?? ""}
+          placeholder="mycompany.com"
+          onChange={(e) => setLink(e.target.value)}
+          className="border-0 p-0 text-sm text-zinc-500 shadow-none placeholder:text-zinc-400 focus-visible:ring-transparent md:text-base"
+        />
+      </div>
+      {!isUrlValid && (
+        <p className="text-sm text-red-500">This link is invalid.</p>
+      )}
     </div>
   );
 };

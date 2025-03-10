@@ -12,7 +12,7 @@ export default async function SignupPage() {
   }
 
   return (
-    <div className="w-full max-w-sm">
+    <div className="w-full max-w-sm animate-fadeIn">
       <AuthForm slug={atob(slug.value)} />
     </div>
   );

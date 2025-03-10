@@ -10,12 +10,13 @@ import { TRPCError } from "@trpc/server";
 import {
   imageMimeTypeRegex,
   METADATA_DESC_SANITIZED_MAX_LENGTH,
-  METADATA_NAME_SANITIZED_MAX_LENGTH,
+  METADATA_TITLE_SANITIZED_MAX_LENGTH,
   metadataDomPurifyConfig,
   TRPCErrorCode,
   urlSafeSlugRegex,
 } from "@/lib/constants";
 import DOMPurify from "isomorphic-dompurify";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 
 const getErrorMsg = (route: string, msg: string) => {
   return `[PageRouter.${route}]: ${msg}`;
@@ -26,11 +27,20 @@ const sanitizeStrOrNull = (str: string | null) => {
   return DOMPurify.sanitize(str, metadataDomPurifyConfig);
 };
 
+const sanitizeUrlOrNull = (url: string | null) => {
+  if (!url || url === "") return null;
+  const sanitizedUrl = sanitizeUrl(url);
+
+  if (sanitizedUrl === "about:blank") return null;
+
+  return sanitizedUrl;
+};
+
 const isMetadataSanitizedLengthValid = (
-  name: string | null,
+  title: string | null,
   desc: string | null,
 ): boolean => {
-  const nameSanitizedLength = DOMPurify.sanitize(name ?? "", {
+  const titleSanitizedLength = DOMPurify.sanitize(title ?? "", {
     ALLOWED_TAGS: [],
   }).replace(/&nbsp;/g, " ").length;
   const descSanitizedLength = DOMPurify.sanitize(desc ?? "", {
@@ -38,8 +48,8 @@ const isMetadataSanitizedLengthValid = (
   }).replace(/&nbsp;/g, " ").length;
 
   return (
-    nameSanitizedLength > METADATA_NAME_SANITIZED_MAX_LENGTH &&
-    descSanitizedLength > METADATA_DESC_SANITIZED_MAX_LENGTH
+    titleSanitizedLength <= METADATA_TITLE_SANITIZED_MAX_LENGTH &&
+    descSanitizedLength <= METADATA_DESC_SANITIZED_MAX_LENGTH
   );
 };
 
@@ -63,9 +73,9 @@ export const pageRouter = createTRPCRouter({
     .input(
       z.object({
         slug: z.string().regex(urlSafeSlugRegex),
-        name: z.string().optional(),
+        title: z.string().optional(),
         description: z.string().optional(),
-        companyUrl: z.string().url().optional(),
+        link: z.string().url().optional(),
         imageUrl: z.string().url().optional(),
         color: z.string().optional(), // @todo: custom validator
       }),
@@ -84,9 +94,9 @@ export const pageRouter = createTRPCRouter({
         await pageService.create({
           userId: ctx.session.user.id,
           slug: input.slug,
-          name: input.name,
+          title: input.title,
           description: input.description,
-          companyUrl: input.companyUrl,
+          link: input.link,
           imageUrl: input.imageUrl,
           color: input.color,
         });
@@ -237,8 +247,9 @@ export const pageRouter = createTRPCRouter({
       z.object({
         pageId: z.string().cuid(),
         metadata: z.object({
-          name: z.string().nullable(),
+          title: z.string().nullable(),
           desc: z.string().nullable(),
+          link: z.string().url().nullable(),
         }),
       }),
     )
@@ -257,8 +268,8 @@ export const pageRouter = createTRPCRouter({
 
         // Check the metadata field lengths without tags or space codes
         if (
-          isMetadataSanitizedLengthValid(
-            input.metadata.name,
+          !isMetadataSanitizedLengthValid(
+            input.metadata.title,
             input.metadata.desc,
           )
         ) {
@@ -272,12 +283,14 @@ export const pageRouter = createTRPCRouter({
         }
 
         // Perform sanitation on the strings that will be persisted
-        const sanitizedName = sanitizeStrOrNull(input.metadata.name);
+        const sanitizedTitle = sanitizeStrOrNull(input.metadata.title);
         const sanitizedDesc = sanitizeStrOrNull(input.metadata.desc);
+        const sanitizedLink = sanitizeUrlOrNull(input.metadata.link);
 
         return await pageService.updatePageMetadata(input.pageId, {
-          name: sanitizedName,
+          title: sanitizedTitle,
           desc: sanitizedDesc,
+          link: sanitizedLink,
         });
       } catch (e) {
         console.log(e);

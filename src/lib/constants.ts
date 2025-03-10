@@ -43,5 +43,5 @@ export const metadataDomPurifyConfig = {
   ALLOWED_TAGS: ["b", "i", "p", "br", "div"],
 };
 
-export const METADATA_NAME_SANITIZED_MAX_LENGTH = 255;
+export const METADATA_TITLE_SANITIZED_MAX_LENGTH = 255;
 export const METADATA_DESC_SANITIZED_MAX_LENGTH = 1000;

@@ -62,9 +62,9 @@ model Page {
   id          String  @id @default(cuid())
   userId      String
   slug        String  @unique
-  name        String?
+  title       String?
   description String?
-  companyUrl  String?
+  link        String?
   imageUrl    String?
   color       String? @default("#000000")
 

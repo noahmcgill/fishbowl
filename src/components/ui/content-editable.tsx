@@ -1,4 +1,3 @@
-import { useMaxLengthFromRichText } from "@/lib/hooks/use-sanitized-max-length";
 import React, {
   type KeyboardEvent,
   type FocusEvent,
@@ -14,7 +13,7 @@ interface ContentEditableProps {
   tabIndex?: number;
   role?: string;
   placeholder?: string;
-  sanitizedMaxLength?: number;
+  disabled?: boolean;
   onChange: (e: ContentEditableEvent) => void;
   onInput?: (e: FormEvent<HTMLDivElement>) => void;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
@@ -35,18 +34,12 @@ export const ContentEditable: React.FC<ContentEditableProps> = ({
   placeholder,
   className,
   html,
-  sanitizedMaxLength,
   ...props
 }) => {
   const onChangeRef = React.useRef(onChange);
   const onInputRef = React.useRef(onInput);
   const onBlurRef = React.useRef(onBlur);
   const onKeyDownRef = React.useRef(onKeyDown);
-
-  const { charsLeft, displayCharsLeft } = useMaxLengthFromRichText(
-    html,
-    sanitizedMaxLength,
-  );
 
   React.useEffect(() => {
     onChangeRef.current = onChange;
@@ -105,11 +98,6 @@ export const ContentEditable: React.FC<ContentEditableProps> = ({
             : undefined
         }
       />
-      {displayCharsLeft ? (
-        <div className={`${charsLeft >= 0 ? "text-zinc-800" : "text-red-500"}`}>
-          {`${charsLeft} characters left`}
-        </div>
-      ) : null}
     </div>
   );
 };

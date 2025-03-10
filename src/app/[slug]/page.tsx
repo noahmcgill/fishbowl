@@ -16,7 +16,7 @@ export default async function Page({
 
   return (
     <div className="flex h-full w-full flex-col md:flex-row">
-      <div className="flex basis-full flex-col gap-8 md:basis-[500px]">
+      <div className="flex basis-full animate-fadeIn-1.5s flex-col gap-8 md:basis-[500px]">
         <UserProfileImage pageId={page.id} existingImageUrl={page.imageUrl} />
         <PageMetadata page={page} />
         <SignoutBtn />

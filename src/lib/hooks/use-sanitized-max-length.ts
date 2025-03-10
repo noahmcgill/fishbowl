@@ -29,5 +29,8 @@ export const useMaxLengthFromRichText = (
     displayCharsLeft: sanitizedMaxLength
       ? charNum >= Math.floor(sanitizedMaxLength * 0.75)
       : false,
+    isPastMaxLength: sanitizedMaxLength
+      ? sanitizedMaxLength - charNum < 0
+      : false,
   };
 };

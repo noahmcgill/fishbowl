@@ -7,7 +7,7 @@ export default async function ClaimPage() {
   const slug = atob(cookieStore.get(SLUG_COOKIE_NAME)?.value ?? "");
 
   return (
-    <div className="w-full max-w-sm">
+    <div className="w-full max-w-sm animate-fadeIn">
       <ClaimLinkForm initialSlug={slug} />
     </div>
   );
