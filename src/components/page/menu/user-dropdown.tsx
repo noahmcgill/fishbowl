@@ -1,37 +1,36 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LuSettings2 } from "react-icons/lu";
-import { logout } from "@/lib/utils/actions";
+import { TooltipTrigger } from "@/components/ui/tooltip";
+import { Dialog } from "@/components/ui/dialog";
+import { UserDropdownTooltip } from "./user-dropdown-tooltip";
+import { UserDropdownContent } from "./user-dropdown-content";
+import { ApiKeyDialogContent } from "./api-key-dialog-content";
+import { useState } from "react";
 
 export const UserDropdown = () => {
-  const handleLogout = async () => {
-    "use server";
+  const [open, setOpen] = useState(false);
 
-    await logout();
-  };
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <LuSettings2 className="text-zinc-500" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent side="top">
-        <DropdownMenuItem className="cursor-pointer justify-center rounded-lg p-3 text-xs text-zinc-500">
-          API Keys
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="cursor-pointer justify-center rounded-lg p-3 text-xs text-zinc-500"
-          onClick={handleLogout}
-        >
-          Log Out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <UserDropdownTooltip>
+        <DropdownMenu>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <LuSettings2 className="text-zinc-500" />
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <UserDropdownContent />
+        </DropdownMenu>
+      </UserDropdownTooltip>
+      {open && <ApiKeyDialogContent />}
+    </Dialog>
   );
 };
