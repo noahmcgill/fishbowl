@@ -10,12 +10,12 @@ import {
   METADATA_TITLE_SANITIZED_MAX_LENGTH,
   metadataDomPurifyConfig,
 } from "@/lib/constants";
-import { ContentEditable } from "../ui/content-editable";
+import { ContentEditable } from "../../ui/content-editable";
 import { type ContentEditableEvent } from "react-contenteditable";
 import { toast } from "sonner";
 import { LuLink } from "react-icons/lu";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
 import { useMaxLengthFromRichText } from "@/lib/hooks/use-sanitized-max-length";
 import { useUrlValidation } from "@/lib/hooks/use-url-validation";
 import { CharsLeft } from "./chars-left";
@@ -66,7 +66,7 @@ export const PageMetadata: React.FC<PageMetadataProps> = ({ page }) => {
   const { mutate } = api.page.updatePageMetadata.useMutation({
     onError: () => {
       toast.error(
-        "An unexpected error occurred while saving page details. Please try again.",
+        "An unexpected error occurred while saving your changes. Please try again.",
       );
     },
   });
@@ -78,7 +78,9 @@ export const PageMetadata: React.FC<PageMetadataProps> = ({ page }) => {
     }
 
     if (!isUrlValid || isTitlePastMaxLength || isDescPastMaxLength) {
-      toast.error("Page could not be saved because some fields are invalid.");
+      toast.error(
+        "Your changes could not be saved because some fields are invalid.",
+      );
       return;
     }
 
@@ -90,6 +92,8 @@ export const PageMetadata: React.FC<PageMetadataProps> = ({ page }) => {
         link: debouncedLink,
       },
     });
+
+    toast.success("Your changes have been saved.");
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedTitle, debouncedDesc, debouncedLink, mutate, page]);

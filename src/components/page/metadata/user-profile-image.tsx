@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { api } from "@/trpc/react";
 import { useMutation } from "@tanstack/react-query";
-import { ImageUploader } from "../ui/image-uploader";
+import { ImageUploader } from "../../ui/image-uploader";
 import {
   type FileUploadInput,
   type FileUploadResponse,
