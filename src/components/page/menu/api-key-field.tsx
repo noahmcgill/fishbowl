@@ -74,9 +74,7 @@ export const ApiKeyField: React.FC<ApiKeyFieldProps> = ({ apiKeyExists }) => {
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="flex items-center rounded-md bg-zinc-100 pl-2 text-sm text-zinc-600">
-        <ScrollArea className="max-w-96 font-mono">
-          {data}
-        </ScrollArea>
+        <ScrollArea className="max-w-96 font-mono">{data}</ScrollArea>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -98,8 +96,15 @@ export const ApiKeyField: React.FC<ApiKeyFieldProps> = ({ apiKeyExists }) => {
       {data && (
         <p className="text-sm font-medium">
           Important: Be sure to store this key in a secure location! This is the
-          last time you&apos;ll be able to view it here. You can refresh it
-          later.
+          last time you&apos;ll be able to view it here. You can&nbsp;
+          <Button
+            variant="link"
+            className="px-0 font-medium underline focus-visible:ring-0"
+            onClick={() => mutate()}
+          >
+            refresh
+          </Button>
+          &nbsp; it later.
         </p>
       )}
     </div>

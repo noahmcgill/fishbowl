@@ -5,10 +5,10 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/trpc/react";
-import { DialogTitle } from "@radix-ui/react-dialog";
 import { ApiKeyField } from "./api-key-field";
 
 export const ApiKeyDialogContent = () => {

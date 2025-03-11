@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
+import { LuLogOut, LuNetwork } from "react-icons/lu";
 
 export const UserDropdownContent = () => {
   return (
@@ -14,14 +15,16 @@ export const UserDropdownContent = () => {
       onCloseAutoFocus={(e) => e.preventDefault()}
     >
       <DialogTrigger asChild>
-        <DropdownMenuItem className="cursor-pointer justify-center rounded-lg p-3 text-xs text-zinc-500">
+        <DropdownMenuItem className="cursor-pointer rounded-lg p-3 text-xs text-zinc-500">
+          <LuNetwork />
           API Key
         </DropdownMenuItem>
       </DialogTrigger>
       <DropdownMenuItem
         onClick={async () => await signOut()}
-        className="cursor-pointer justify-center rounded-lg p-3 text-xs text-zinc-500"
+        className="cursor-pointer rounded-lg p-3 text-xs text-zinc-500"
       >
+        <LuLogOut />
         Log Out
       </DropdownMenuItem>
     </DropdownMenuContent>

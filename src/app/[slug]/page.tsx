@@ -2,6 +2,7 @@ import { UserProfileImage } from "@/components/page/metadata/user-profile-image"
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
 import { PageMetadata } from "@/components/page/metadata/page-metadata";
+import { EditableGrid } from "@/components/page/grid/editable-grid";
 
 export default async function Page({
   params,
@@ -15,11 +16,13 @@ export default async function Page({
 
   return (
     <div className="flex h-full w-full flex-col md:flex-row">
-      <div className="flex basis-full animate-fadeIn-1.5s flex-col gap-8 md:basis-[500px]">
+      <div className="flex basis-full animate-fadeIn-1.5s flex-col gap-8 md:basis-[400px]">
         <UserProfileImage pageId={page.id} existingImageUrl={page.imageUrl} />
         <PageMetadata page={page} />
       </div>
-      <div className="grow">Hello</div>
+      <div className="grow">
+        <EditableGrid />
+      </div>
     </div>
   );
 }
