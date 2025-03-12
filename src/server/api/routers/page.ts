@@ -17,6 +17,7 @@ import {
 } from "@/lib/constants";
 import DOMPurify from "isomorphic-dompurify";
 import { sanitizeUrl } from "@braintree/sanitize-url";
+import { type JsonObject } from "@prisma/client/runtime/library";
 
 const getErrorMsg = (route: string, msg: string) => {
   return `[PageRouter.${route}]: ${msg}`;
@@ -300,6 +301,45 @@ export const pageRouter = createTRPCRouter({
           message: getErrorMsg(
             "updatePageMetadata",
             "unexpected error occurred updating the user's page metadata",
+          ),
+        });
+      }
+    }),
+
+  updateGridState: protectedProcedure
+    .input(
+      z.object({
+        pageId: z.string().cuid(),
+        gridState: z.any(), // @todo: custom validator
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userPage = await pageService.getFirstForUser(ctx.session.user.id);
+        if (!userPage || userPage.id !== input.pageId) {
+          throw new TRPCError({
+            code: TRPCErrorCode.FORBIDDEN,
+            message: getErrorMsg(
+              "updateGridState",
+              "user is attempting to modify a page that is not theirs",
+            ),
+          });
+        }
+
+        // do stuff
+
+        return await pageService.updateGridState(
+          input.pageId,
+          input.gridState as JsonObject,
+        );
+      } catch (e) {
+        console.log(e);
+        if (e instanceof TRPCError) throw e;
+        throw new TRPCError({
+          code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
+          message: getErrorMsg(
+            "updateGridState",
+            "unexpected error occurred updating the user's page grid state",
           ),
         });
       }

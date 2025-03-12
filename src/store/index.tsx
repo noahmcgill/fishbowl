@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { type GridState } from "./types";
+import { ConfigType, type GridState } from "./types";
 import { focusAtom } from "jotai-optics";
 
 // @todo: remove or solidify as default
@@ -7,24 +7,39 @@ export const testState: GridState = {
   widgets: [
     {
       key: "a",
-      config: {},
+      config: {
+        type: ConfigType.COUNT,
+        title: "MRR",
+        description: "Monthly Recurring Revenue",
+        data: "$2k",
+      },
     },
     {
       key: "b",
-      config: {},
+      config: {
+        type: ConfigType.COUNT,
+        title: "ARR",
+        description: "Annual Recurring Revenue",
+        data: "$24k",
+      },
     },
     {
       key: "c",
-      config: {},
+      config: {
+        type: ConfigType.COUNT,
+        title: "Total Funding Raised",
+        description: "March 11, 2024",
+        data: "$100k",
+      },
     },
   ],
   layouts: {
     lg: [
-      { i: "a", x: 0, y: 0, w: 2, h: 2, isResizable: true },
+      { i: "a", x: 0, y: 0, w: 1, h: 1, isResizable: false },
       { i: "b", x: 2, y: 0, w: 1, h: 1, isResizable: false },
       { i: "c", x: 3, y: 0, w: 1, h: 1, isResizable: false },
     ],
-    xs: [
+    md: [
       { i: "a", x: 0, y: 0, w: 2, h: 1, isResizable: false },
       { i: "b", x: 0, y: 1, w: 1, h: 1, isResizable: false },
       { i: "c", x: 0, y: 7, w: 1, h: 1, isResizable: false },
@@ -32,10 +47,10 @@ export const testState: GridState = {
   },
 };
 
-export const editableGridStateAtom = atom<GridState>(testState);
-export const editableWidgetsAtom = focusAtom(editableGridStateAtom, (optic) =>
+export const gridStateAtom = atom<GridState>(testState);
+export const widgetsAtom = focusAtom(gridStateAtom, (optic) =>
   optic.prop("widgets"),
 );
-export const editableLayoutsAtom = focusAtom(editableGridStateAtom, (optic) =>
+export const layoutsAtom = focusAtom(gridStateAtom, (optic) =>
   optic.prop("layouts"),
 );

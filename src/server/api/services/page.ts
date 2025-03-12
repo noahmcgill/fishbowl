@@ -3,6 +3,7 @@ import { type Page } from "@prisma/client";
 import { s3 } from "@/server/clients/s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { type JsonObject } from "@prisma/client/runtime/library";
 
 interface CreatePageInput {
   userId: string;
@@ -119,6 +120,13 @@ export class PageService {
         description: metadata.desc,
         link: metadata.link,
       },
+    });
+  }
+
+  async updateGridState(pageId: string, gridState: JsonObject) {
+    await db.page.update({
+      where: { id: pageId },
+      data: { gridState },
     });
   }
 }

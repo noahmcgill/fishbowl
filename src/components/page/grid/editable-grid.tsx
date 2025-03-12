@@ -1,8 +1,8 @@
 "use client";
 
-import { editableLayoutsAtom, editableWidgetsAtom } from "@/store";
-import { useAtom } from "jotai";
-import { type ComponentClass, useMemo } from "react";
+import { gridStateAtom, layoutsAtom } from "@/store";
+import { useAtom, useAtomValue } from "jotai";
+import { type ComponentClass, useEffect, useMemo, useRef } from "react";
 import {
   type Layout,
   type Layouts,
@@ -11,15 +11,31 @@ import {
   WidthProvider,
   type WidthProviderProps,
 } from "react-grid-layout";
+import { useHydrateAtoms } from "jotai/utils";
+import { SingleDataPointBlock } from "./blocks/non-editable/single-data-point-block";
+import { CheckConfig } from "@/lib/utils/store";
+import { type JsonObject } from "@prisma/client/runtime/library";
+import { type GridState } from "@/store/types";
 
 type ResponsiveGridType = ComponentClass<
   ResponsiveProps & WidthProviderProps,
   unknown
 >;
 
-export const EditableGrid = () => {
-  const [widgets] = useAtom(editableWidgetsAtom);
-  const [layouts, setLayouts] = useAtom(editableLayoutsAtom);
+interface EditableGridStateProps {
+  initialGridState: JsonObject;
+}
+
+export const EditableGrid: React.FC<EditableGridStateProps> = ({
+  initialGridState,
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const initialGridStateCast = initialGridState as unknown as GridState;
+
+  useHydrateAtoms([[gridStateAtom, initialGridStateCast]]);
+
+  const gridState = useAtomValue(gridStateAtom);
+  const [layouts, setLayouts] = useAtom(layoutsAtom);
   const ResponsiveReactGridLayout = useMemo<ResponsiveGridType>(
     () => WidthProvider(Responsive),
     [],
@@ -29,26 +45,42 @@ export const EditableGrid = () => {
     setLayouts(allLayouts);
   };
 
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [layouts]);
+
+  // @leftoff: https://github.com/react-grid-layout/react-grid-layout/issues/576
   return (
-    <ResponsiveReactGridLayout
-      className="m-auto"
-      breakpoints={{ xxl: 1536, xl: 1280, lg: 1024, md: 768, sm: 640 }}
-      cols={{ xxl: 4, xl: 4, lg: 4, md: 4, sm: 1 }}
-      rowHeight={175}
-      layouts={layouts}
-      margin={[40, 40]}
-      onLayoutChange={onLayoutChange}
-    >
-      {widgets.map((widget) => (
-        <div
-          key={widget.key}
-          className="flex cursor-grab items-center justify-center rounded-3xl bg-white shadow-[0_2px_4px_rgba(0,0,0,.04)] active:cursor-grabbing"
-        >
-          <div className="flex h-full w-full flex-col items-center justify-center rounded-2xl bg-white p-6 text-3xl uppercase text-[var(--black-1)]">
-            {widget.key}
-          </div>
-        </div>
-      ))}
-    </ResponsiveReactGridLayout>
+    <div>
+      <ResponsiveReactGridLayout
+        className="m-[-40px]"
+        breakpoints={{ lg: 768, md: 0 }}
+        cols={{ lg: 4, md: 1 }}
+        rowHeight={175}
+        layouts={layouts}
+        margin={[40, 40]}
+        onLayoutChange={onLayoutChange}
+      >
+        {gridState.widgets.map((widget) => {
+          if (CheckConfig.isSingleDataPointConfig(widget.config)) {
+            return (
+              <div key={widget.key}>
+                <SingleDataPointBlock config={widget.config} />
+              </div>
+            );
+          }
+
+          return (
+            <div
+              key={widget.key}
+              className="flex cursor-grab items-center justify-center rounded-3xl bg-white shadow-[0_2px_4px_rgba(0,0,0,.04)] active:cursor-grabbing"
+            >
+              {widget.key}
+            </div>
+          );
+        })}
+      </ResponsiveReactGridLayout>
+      <div id="anchor" ref={ref}></div>
+    </div>
   );
 };
