@@ -7,6 +7,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "@/components/ui/sonner";
 import { IoMdAlert, IoMdCheckmarkCircle } from "react-icons/io";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Provider } from "jotai";
 
 export const metadata: Metadata = {
   title: "fishbowl - Share your project's metrics",
@@ -28,7 +29,9 @@ export default function RootLayout({
           }}
         />
         <TRPCReactProvider>
-          <TooltipProvider>{children}</TooltipProvider>
+          <Provider>
+            <TooltipProvider>{children}</TooltipProvider>
+          </Provider>
         </TRPCReactProvider>
       </body>
     </html>

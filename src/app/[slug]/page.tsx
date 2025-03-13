@@ -2,9 +2,9 @@ import { UserProfileImage } from "@/components/page/metadata/user-profile-image"
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
 import { PageMetadata } from "@/components/page/metadata/page-metadata";
-import { EditableGrid } from "@/components/page/grid/editable-grid";
 import { type JsonObject } from "@prisma/client/runtime/library";
 import { Menu } from "@/components/page/menu/menu";
+import EditableGrid from "@/components/page/grid/editable-grid";
 
 export default async function Page({
   params,
@@ -23,7 +23,10 @@ export default async function Page({
         <PageMetadata page={page} />
       </div>
       <div className="grow">
-        <EditableGrid initialGridState={page.gridState as JsonObject} />
+        <EditableGrid
+          initialGridState={page.gridState as JsonObject}
+          pageId={page.id}
+        />
       </div>
       <Menu pageId={page.id} />
     </div>

@@ -12,7 +12,7 @@ import {
   type WidthProviderProps,
 } from "react-grid-layout";
 import { useHydrateAtoms } from "jotai/utils";
-import { SingleDataPointBlock } from "./blocks/non-editable/single-data-point-block";
+import { EditableSingleDataPointBlock } from "./blocks/editable/editable-single-data-point-block";
 import { CheckConfig } from "@/lib/utils/store";
 import { type JsonObject } from "@prisma/client/runtime/library";
 import { type GridState } from "@/store/types";
@@ -23,10 +23,12 @@ type ResponsiveGridType = ComponentClass<
 >;
 
 interface EditableGridStateProps {
+  pageId: string;
   initialGridState: JsonObject;
 }
 
-export const EditableGrid: React.FC<EditableGridStateProps> = ({
+const EditableGrid: React.FC<EditableGridStateProps> = ({
+  pageId,
   initialGridState,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -49,23 +51,27 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [layouts]);
 
-  // @leftoff: https://github.com/react-grid-layout/react-grid-layout/issues/576
   return (
     <div>
       <ResponsiveReactGridLayout
-        className="m-[-40px]"
+        className="m-[-40px] animate-fadeIn-1.5s"
         breakpoints={{ lg: 768, md: 0 }}
         cols={{ lg: 4, md: 1 }}
         rowHeight={175}
         layouts={layouts}
         margin={[40, 40]}
         onLayoutChange={onLayoutChange}
+        draggableHandle=".draggable"
       >
         {gridState.widgets.map((widget) => {
           if (CheckConfig.isSingleDataPointConfig(widget.config)) {
             return (
               <div key={widget.key}>
-                <SingleDataPointBlock config={widget.config} />
+                <EditableSingleDataPointBlock
+                  config={widget.config}
+                  blockKey={widget.key}
+                  pageId={pageId}
+                />
               </div>
             );
           }
@@ -84,3 +90,5 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
     </div>
   );
 };
+
+export default EditableGrid;

@@ -51,9 +51,7 @@ export const ImageUploader: React.FC<ImageUploadProps> = ({
         </Avatar>
       </label>
       {image && isHovered ? (
-        <div
-          className={`absolute bottom-0 flex w-full justify-between px-2 md:bottom-4`}
-        >
+        <div className="absolute bottom-0 flex w-full justify-between px-2 md:bottom-4">
           <Button
             variant="outline"
             className="rounded-full bg-white p-2 shadow-md"

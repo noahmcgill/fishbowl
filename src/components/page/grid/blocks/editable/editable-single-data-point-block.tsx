@@ -1,18 +1,17 @@
 import { type SingleDataPointConfig } from "@/store/types";
-import { BlockContainer } from "./block-container";
+import { EditableBlockContainer } from "./editable-block-container";
 
-interface SingleDataPointBlockProps {
+interface EditableSingleDataPointBlockProps {
   pageId: string;
   blockKey: string;
   config: SingleDataPointConfig;
 }
 
-export const SingleDataPointBlock: React.FC<SingleDataPointBlockProps> = ({
-  blockKey,
-  config,
-}) => {
+export const EditableSingleDataPointBlock: React.FC<
+  EditableSingleDataPointBlockProps
+> = ({ pageId, blockKey, config }) => {
   return (
-    <BlockContainer blockKey={blockKey}>
+    <EditableBlockContainer blockKey={blockKey} pageId={pageId}>
       <div className="text-sm font-medium text-zinc-700">{config.title}</div>
       <div className="w-full">
         <div className="whitespace-nowrap text-4xl font-bold">
@@ -24,6 +23,6 @@ export const SingleDataPointBlock: React.FC<SingleDataPointBlockProps> = ({
           {config.description}
         </div>
       )}
-    </BlockContainer>
+    </EditableBlockContainer>
   );
 };
