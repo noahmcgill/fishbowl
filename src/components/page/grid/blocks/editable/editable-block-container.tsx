@@ -62,14 +62,14 @@ export const EditableBlockContainer: React.FC<EditableBlockContainerProps> = ({
 
   return (
     <div
-      className="draggable flex h-full w-full cursor-grab flex-col justify-center gap-2 rounded-3xl border-[1px] border-slate-200 p-8 shadow-[0_2px_4px_rgba(0,0,0,.04)] active:cursor-grabbing active:bg-white"
+      className="flex h-full w-full cursor-grab flex-col justify-center gap-2 rounded-3xl border-[1px] border-slate-200 p-8 shadow-[0_2px_4px_rgba(0,0,0,.04)] active:cursor-grabbing active:bg-white"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       key={blockKey}
     >
       {children}
       {isHovered && (
-        <div className="absolute left-[-14px] top-[-14px] flex w-full justify-between px-2">
+        <div className="absolute left-[-14px] top-[-14px] flex w-full justify-between px-2 no-drag">
           <Button
             variant="outline"
             className="rounded-full bg-white p-2 shadow-md"

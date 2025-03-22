@@ -27,7 +27,7 @@ interface EditableGridStateProps {
   initialGridState: JsonObject;
 }
 
-const EditableGrid: React.FC<EditableGridStateProps> = ({
+export const EditableGrid: React.FC<EditableGridStateProps> = ({
   pageId,
   initialGridState,
 }) => {
@@ -61,7 +61,7 @@ const EditableGrid: React.FC<EditableGridStateProps> = ({
         layouts={layouts}
         margin={[40, 40]}
         onLayoutChange={onLayoutChange}
-        draggableHandle=".draggable"
+        draggableCancel=".no-drag"
       >
         {gridState.widgets.map((widget) => {
           if (CheckConfig.isSingleDataPointConfig(widget.config)) {
@@ -91,4 +91,3 @@ const EditableGrid: React.FC<EditableGridStateProps> = ({
   );
 };
 
-export default EditableGrid;

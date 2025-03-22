@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { PageMetadata } from "@/components/page/metadata/page-metadata";
 import { type JsonObject } from "@prisma/client/runtime/library";
 import { Menu } from "@/components/page/menu/menu";
-import EditableGrid from "@/components/page/grid/editable-grid";
+import { EditableGrid } from "@/components/page/grid/editable-grid";
 
 export default async function Page({
   params,
