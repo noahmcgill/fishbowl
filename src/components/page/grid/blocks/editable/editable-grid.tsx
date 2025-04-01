@@ -12,7 +12,7 @@ import {
   type WidthProviderProps,
 } from "react-grid-layout";
 import { useHydrateAtoms } from "jotai/utils";
-import { EditableSingleDataPointBlock } from "./blocks/editable/editable-single-data-point-block";
+import { EditableSingleDataPointBlock } from "./editable-single-data-point-block";
 import { CheckConfig } from "@/lib/utils/store";
 import { type JsonObject } from "@prisma/client/runtime/library";
 import { type GridState } from "@/store/types";

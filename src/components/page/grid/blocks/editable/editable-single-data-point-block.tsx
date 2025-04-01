@@ -43,7 +43,6 @@ export const EditableSingleDataPointBlock: React.FC<
 
   // TODO: Add API call to save data
 
-
   return (
     <EditableBlockContainer
       blockKey={blockKey}
@@ -56,7 +55,7 @@ export const EditableSingleDataPointBlock: React.FC<
         FXT: false,
       }}
     >
-      <div className="w-full min-w-0 overflow-x-auto whitespace-nowrap no-scrollbar">
+      <div className="no-scrollbar w-full min-w-0 overflow-x-auto whitespace-nowrap">
         <ContentEditable
           html={title ?? ""}
           placeholder="Label"
@@ -66,7 +65,7 @@ export const EditableSingleDataPointBlock: React.FC<
           tabIndex={0}
         />
       </div>
-      <div className="w-full min-w-0 overflow-x-auto whitespace-nowrap no-scrollbar">
+      <div className="no-scrollbar w-full min-w-0 overflow-x-auto whitespace-nowrap">
         <ContentEditable
           html={data ?? ""}
           placeholder="Value"
@@ -76,7 +75,7 @@ export const EditableSingleDataPointBlock: React.FC<
           tabIndex={0}
         />
       </div>
-      <div className="w-full min-w-0 overflow-x-auto whitespace-nowrap no-scrollbar">
+      <div className="no-scrollbar w-full min-w-0 overflow-y-auto">
         <ContentEditable
           html={desc ?? ""}
           placeholder="Data Description"

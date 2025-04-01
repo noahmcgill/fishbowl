@@ -10,21 +10,23 @@ import {
   METADATA_TITLE_SANITIZED_MAX_LENGTH,
   metadataDomPurifyConfig,
 } from "@/lib/constants";
-import { ContentEditable } from "../../ui/content-editable";
+import { ContentEditable } from "../../../ui/content-editable";
 import { type ContentEditableEvent } from "react-contenteditable";
 import { toast } from "sonner";
 import { LuLink } from "react-icons/lu";
-import { Input } from "../../ui/input";
-import { Label } from "../../ui/label";
+import { Input } from "../../../ui/input";
+import { Label } from "../../../ui/label";
 import { useMaxLengthFromRichText } from "@/lib/hooks/use-sanitized-max-length";
 import { useUrlValidation } from "@/lib/hooks/use-url-validation";
 import { CharsLeft } from "./chars-left";
 
-interface PageMetadataProps {
+interface EditablePageMetadataProps {
   page: Page;
 }
 
-export const PageMetadata: React.FC<PageMetadataProps> = ({ page }) => {
+export const EditablePageMetadata: React.FC<EditablePageMetadataProps> = ({
+  page,
+}) => {
   // STATE
   const [title, setTitle] = useState<string | null>(page.title);
   const [desc, setDesc] = useState<string | null>(page.description);

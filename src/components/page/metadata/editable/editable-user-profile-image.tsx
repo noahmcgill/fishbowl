@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { api } from "@/trpc/react";
 import { useMutation } from "@tanstack/react-query";
-import { ImageUploader } from "../../ui/image-uploader";
+import { ImageUploader } from "../../../ui/image-uploader";
 import {
   type FileUploadInput,
   type FileUploadResponse,
@@ -12,15 +12,14 @@ import {
 import { type TRPCError } from "@trpc/server";
 import { toast } from "sonner";
 
-interface UserProfileImageProps {
+interface EditableUserProfileImageProps {
   pageId: string;
   existingImageUrl: string | null;
 }
 
-export const UserProfileImage: React.FC<UserProfileImageProps> = ({
-  pageId,
-  existingImageUrl,
-}) => {
+export const EditableUserProfileImage: React.FC<
+  EditableUserProfileImageProps
+> = ({ pageId, existingImageUrl }) => {
   const [image, setImage] = useState<string | null>(existingImageUrl);
 
   const { mutateAsync: getPresignedUrl } =

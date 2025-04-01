@@ -14,7 +14,7 @@ interface ContentEditableProps {
   role?: string;
   placeholder?: string;
   disabled?: boolean;
-  onChange: (e: ContentEditableEvent) => void;
+  onChange?: (e: ContentEditableEvent) => void;
   onInput?: (e: FormEvent<HTMLDivElement>) => void;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
   onKeyDown?: (e: KeyboardEvent<HTMLDivElement>) => void;
