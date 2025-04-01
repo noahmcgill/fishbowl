@@ -2,7 +2,7 @@
 
 import { gridStateAtom, layoutsAtom } from "@/store";
 import { useAtom, useAtomValue } from "jotai";
-import { type ComponentClass, useEffect, useMemo, useRef } from "react";
+import React, { type ComponentClass, useEffect, useMemo, useRef } from "react";
 import {
   type Layout,
   type Layouts,
@@ -56,12 +56,12 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
       <ResponsiveReactGridLayout
         className="m-[-40px] animate-fadeIn-1.5s"
         breakpoints={{ lg: 768, md: 0 }}
-        cols={{ lg: 4, md: 1 }}
+        cols={{ lg: 4, md: 2 }}
         rowHeight={175}
         layouts={layouts}
         margin={[40, 40]}
         onLayoutChange={onLayoutChange}
-        draggableCancel=".no-drag"
+        draggableHandle=".drag-handle"
       >
         {gridState.widgets.map((widget) => {
           if (CheckConfig.isSingleDataPointConfig(widget.config)) {
@@ -79,7 +79,7 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
           return (
             <div
               key={widget.key}
-              className="flex cursor-grab items-center justify-center rounded-3xl bg-white shadow-[0_2px_4px_rgba(0,0,0,.04)] active:cursor-grabbing"
+              className="flex items-center justify-center rounded-3xl bg-white shadow-[0_2px_4px_rgba(0,0,0,.04)]"
             >
               {widget.key}
             </div>
@@ -90,4 +90,3 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
     </div>
   );
 };
-

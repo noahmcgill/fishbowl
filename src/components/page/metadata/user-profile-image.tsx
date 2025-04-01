@@ -73,7 +73,7 @@ export const UserProfileImage: React.FC<UserProfileImageProps> = ({
 
         setImage(imageDataUrl);
       } catch (e) {
-        console.log(e);
+        console.error(e);
         toast.error(
           "An error occurred while uploading your image. Please try again.",
         );

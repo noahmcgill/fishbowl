@@ -129,7 +129,7 @@ export const pageRouter = createTRPCRouter({
 
         return page;
       } catch (e) {
-        console.log(e);
+        console.error(e);
         if (e instanceof TRPCError) throw e;
         throw new TRPCError({
           code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
@@ -156,7 +156,7 @@ export const pageRouter = createTRPCRouter({
         const page = await pageService.getPageBySlug(input.slug);
         return page !== null;
       } catch (e) {
-        console.log(e);
+        console.error(e);
         throw new TRPCError({
           code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
           message: getErrorMsg(
@@ -196,7 +196,7 @@ export const pageRouter = createTRPCRouter({
           fileName: input.fileName,
         });
       } catch (e) {
-        console.log(e);
+        console.error(e);
         throw new TRPCError({
           code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
           message: getErrorMsg(
@@ -229,7 +229,7 @@ export const pageRouter = createTRPCRouter({
 
         return await pageService.updatePageImageUrl(input.pageId, input.url);
       } catch (e) {
-        console.log(e);
+        console.error(e);
         if (e instanceof TRPCError) throw e;
         throw new TRPCError({
           code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
@@ -294,7 +294,7 @@ export const pageRouter = createTRPCRouter({
           link: sanitizedLink,
         });
       } catch (e) {
-        console.log(e);
+        console.error(e);
         if (e instanceof TRPCError) throw e;
         throw new TRPCError({
           code: TRPCErrorCode.INTERNAL_SERVER_ERROR,
@@ -333,7 +333,7 @@ export const pageRouter = createTRPCRouter({
           input.gridState as JsonObject,
         );
       } catch (e) {
-        console.log(e);
+        console.error(e);
         if (e instanceof TRPCError) throw e;
         throw new TRPCError({
           code: TRPCErrorCode.INTERNAL_SERVER_ERROR,

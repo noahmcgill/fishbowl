@@ -3,33 +3,76 @@ import { gridStateAtom } from "@/store";
 import { type GridState } from "@/store/types";
 import { api } from "@/trpc/react";
 import { useAtom } from "jotai";
-import { useState } from "react";
-import { LuTrash } from "react-icons/lu";
+import { useMemo, useState } from "react";
+import { type Layout } from "react-grid-layout";
+import { MdOutlineDragIndicator } from "react-icons/md";
 import { toast } from "sonner";
+import {
+  type ResponsiveWH,
+  type AllowedBlockSizes,
+  BlockSize,
+  type WH,
+} from "./types";
+import { SizeSelector } from "./size-selector";
 
-interface AllowedBlockSizes {
-  single?: boolean; // 1x1
-  double?: boolean; // 2x1
-  row?: boolean; // 4x1
-  txt?: boolean; // 2x2
-  fxf?: boolean; // 4x4
-}
+const BLOCK_SIZE_MAP: Record<BlockSize, ResponsiveWH> = {
+  SINGLE: {
+    lg: { w: 1, h: 1 },
+    md: { w: 1, h: 1 },
+  },
+  DOUBLE: {
+    lg: { w: 2, h: 1 },
+    md: { w: 2, h: 1 },
+  },
+  ROW: {
+    lg: { w: 4, h: 1 },
+    md: { w: 2, h: 1 },
+  },
+  TXT: {
+    lg: { w: 2, h: 2 },
+    md: { w: 2, h: 2 },
+  },
+  FXT: {
+    lg: { w: 4, h: 2 },
+    md: { w: 2, h: 2 },
+  },
+};
+
+const WH_SIZE_MAP: Record<string, BlockSize> = {
+  "1,1": BlockSize.SINGLE,
+  "2,1": BlockSize.DOUBLE,
+  "4,1": BlockSize.ROW,
+  "2,2": BlockSize.TXT,
+};
+
+const getBlockSizeFromWH = (wh: WH): BlockSize =>
+  WH_SIZE_MAP[`${wh.w},${wh.h}`] ?? BlockSize.FXT;
 
 interface EditableBlockContainerProps {
   pageId: string;
   blockKey: string;
   children: React.ReactNode;
-  allowedBlockSizes?: AllowedBlockSizes;
+  allowedBlockSizes: AllowedBlockSizes;
 }
 
 export const EditableBlockContainer: React.FC<EditableBlockContainerProps> = ({
   pageId,
   blockKey,
   children,
-  // allowedBlockSizes,
+  allowedBlockSizes,
 }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [gridState, setGridState] = useAtom(gridStateAtom);
+
+  const memoizedBlock = useMemo(() => {
+    return gridState.layouts.lg?.find((block) => block.i === blockKey);
+  }, [blockKey, gridState.layouts.lg]);
+  const [currentSize, setCurrentSize] = useState<BlockSize>(
+    getBlockSizeFromWH({
+      w: memoizedBlock?.w ?? 0,
+      h: memoizedBlock?.h ?? 0,
+    }),
+  );
 
   const { mutateAsync } = api.page.updateGridState.useMutation({
     onError: () => {
@@ -40,44 +83,65 @@ export const EditableBlockContainer: React.FC<EditableBlockContainerProps> = ({
   });
 
   const handleDeleteBlock = async () => {
+    const filterBlock = (layout?: Layout[]) =>
+      (layout ?? []).filter((l) => l.i !== blockKey);
+
     const newGridState: GridState = {
-      widgets: gridState.widgets.filter((widget) => widget.key !== blockKey),
+      widgets: gridState.widgets.filter(({ key }) => key !== blockKey),
       layouts: {
-        lg: (gridState.layouts.lg ?? []).filter(
-          (layout) => layout.i !== blockKey,
-        ),
-        md: (gridState.layouts.md ?? []).filter(
-          (layout) => layout.i !== blockKey,
-        ),
+        lg: filterBlock(gridState.layouts.lg),
+        md: filterBlock(gridState.layouts.md),
       },
     };
 
     setGridState(newGridState);
+    await mutateAsync({ pageId, gridState: newGridState });
+  };
 
-    await mutateAsync({
-      pageId,
-      gridState: newGridState,
-    });
+  const handleChangeBlockSize = async (size: BlockSize) => {
+    const updateLayout = (breakpoint: "lg" | "md", layout?: Layout[]) =>
+      (layout ?? []).map((l) =>
+        l.i === blockKey ? { ...l, ...BLOCK_SIZE_MAP[size][breakpoint] } : l,
+      );
+
+    const newGridState: GridState = {
+      widgets: gridState.widgets,
+      layouts: {
+        lg: updateLayout("lg", gridState.layouts.lg),
+        md: updateLayout("md", gridState.layouts.md),
+      },
+    };
+
+    await mutateAsync({ pageId, gridState: newGridState });
+    setGridState(newGridState);
+    setCurrentSize(size);
   };
 
   return (
     <div
-      className="flex h-full w-full cursor-grab flex-col justify-center gap-2 rounded-3xl border-[1px] border-slate-200 p-8 shadow-[0_2px_4px_rgba(0,0,0,.04)] active:cursor-grabbing active:bg-white"
+      className="flex h-full w-full flex-col justify-center gap-2 rounded-3xl border-[1px] border-slate-200 p-8 shadow-[0_2px_4px_rgba(0,0,0,.04)] active:bg-white"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       key={blockKey}
     >
       {children}
       {isHovered && (
-        <div className="absolute left-[-14px] top-[-14px] flex w-full justify-between px-2 no-drag">
+        <div className="absolute left-[-14px] top-[-14px] flex w-full justify-between px-2">
           <Button
             variant="outline"
-            className="rounded-full bg-white p-2 shadow-md"
-            onClick={async () => await handleDeleteBlock()}
+            className="drag-handle cursor-grab rounded-full bg-white p-2 shadow-md active:cursor-grabbing"
           >
-            <LuTrash className="h-5 w-5" />
+            <MdOutlineDragIndicator className="h-5 w-5" />
           </Button>
         </div>
+      )}
+      {isHovered && (
+        <SizeSelector
+          handleChange={handleChangeBlockSize}
+          handleDelete={handleDeleteBlock}
+          allowedSizes={allowedBlockSizes}
+          currentSize={currentSize}
+        />
       )}
     </div>
   );
