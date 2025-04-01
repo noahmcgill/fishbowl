@@ -15,7 +15,7 @@ export interface BaseConfig {
 
 export interface SingleDataPointConfig extends BaseConfig {
   type: ConfigType.COUNT;
-  data: number | string | null;
+  data: string | null;
 }
 
 export interface Widget {

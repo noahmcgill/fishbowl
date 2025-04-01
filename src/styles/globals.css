@@ -70,6 +70,17 @@
   }
 }
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+
 [contenteditable]:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
@@ -87,6 +98,7 @@
   border-radius: 24px;
   transition: all 500ms ease 0s !important;
   will-change: transform;
+  z-index: -100;
 }
 
 .react-grid-item {

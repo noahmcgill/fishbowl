@@ -57,7 +57,7 @@ export const ContentEditable: React.FC<ContentEditableProps> = ({
   return (
     <div className="relative flex cursor-text flex-col">
       <div
-        className={`${className} absolute z-[-1] text-zinc-200 ${placeholder && (html === "" || html === "<br>") ? "visible" : "invisible"}`}
+        className={`${className} absolute text-zinc-200 ${placeholder && (html === "" || html === "<br>" || html === " ") ? "visible" : "invisible"}`}
       >
         {placeholder}
       </div>
