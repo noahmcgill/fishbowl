@@ -19,7 +19,7 @@ export default async function Page({
   const { slug } = await params;
   const page = await api.page.getPageBySlug({ slug });
 
-  if (!page) redirect("/");
+  if (!page) redirect("/claim");
 
   const session = await auth();
   const isEditable = session && session.user.id === page.userId;

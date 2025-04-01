@@ -115,19 +115,7 @@ export const pageRouter = createTRPCRouter({
     .input(z.object({ slug: z.string().regex(urlSafeSlugRegex) }))
     .query(async ({ input }) => {
       try {
-        const page = await pageService.getPageBySlug(input.slug);
-
-        if (!page) {
-          throw new TRPCError({
-            code: TRPCErrorCode.NOT_FOUND,
-            message: getErrorMsg(
-              "getPageBySlug",
-              "a page with this slug does not exist",
-            ),
-          });
-        }
-
-        return page;
+        return await pageService.getPageBySlug(input.slug);
       } catch (e) {
         console.error(e);
         if (e instanceof TRPCError) throw e;

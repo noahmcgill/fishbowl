@@ -1,14 +1,14 @@
+import { resolveUserPage } from "@/lib/utils/server/routing";
 import { auth } from "@/server/auth";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 export default async function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await auth();
   if (session) {
-    redirect("/");
+    await resolveUserPage();
   }
 
   return (
