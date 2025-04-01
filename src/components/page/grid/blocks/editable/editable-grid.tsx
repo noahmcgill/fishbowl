@@ -16,6 +16,8 @@ import { EditableSingleDataPointBlock } from "./editable-single-data-point-block
 import { CheckConfig } from "@/lib/utils/store";
 import { type JsonObject } from "@prisma/client/runtime/library";
 import { type GridState } from "@/store/types";
+import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 type ResponsiveGridType = ComponentClass<
   ResponsiveProps & WidthProviderProps,
@@ -31,6 +33,7 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
   pageId,
   initialGridState,
 }) => {
+  // STATE & ATOMS
   const ref = useRef<HTMLDivElement>(null);
   const initialGridStateCast = initialGridState as unknown as GridState;
 
@@ -38,18 +41,38 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
 
   const gridState = useAtomValue(gridStateAtom);
   const [layouts, setLayouts] = useAtom(layoutsAtom);
+
+  // HOOKS
   const ResponsiveReactGridLayout = useMemo<ResponsiveGridType>(
     () => WidthProvider(Responsive),
     [],
   );
 
-  const onLayoutChange = (currentLayout: Layout[], allLayouts: Layouts) => {
-    setLayouts(allLayouts);
-  };
-
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [layouts]);
+
+  // ACTIONS
+  const { mutateAsync } = api.page.updateGridState.useMutation({
+    onError: () => {
+      toast.error(
+        "Unable to update grid. Please refresh the page and try again.",
+      );
+    },
+  });
+
+  const onLayoutChange = async (
+    currentLayout: Layout[],
+    allLayouts: Layouts,
+  ) => {
+    const newGridState: GridState = {
+      widgets: gridState.widgets,
+      layouts: allLayouts,
+    };
+
+    await mutateAsync({ pageId, gridState: newGridState });
+    setLayouts(layouts);
+  };
 
   return (
     <div>
