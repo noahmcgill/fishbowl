@@ -11,9 +11,9 @@ import {
   imageMimeTypeRegex,
   METADATA_DESC_SANITIZED_MAX_LENGTH,
   METADATA_TITLE_SANITIZED_MAX_LENGTH,
-  metadataDomPurifyConfig,
+  METADATA_DOM_PURIFY_CONFIG,
   TRPCErrorCode,
-  urlSafeSlugRegex,
+  URL_SAFE_SLUG_REGEX,
 } from "@/lib/constants";
 import DOMPurify from "isomorphic-dompurify";
 import { sanitizeUrl } from "@braintree/sanitize-url";
@@ -25,7 +25,7 @@ const getErrorMsg = (route: string, msg: string) => {
 
 const sanitizeStrOrNull = (str: string | null) => {
   if (!str || str === "") return null;
-  return DOMPurify.sanitize(str, metadataDomPurifyConfig);
+  return DOMPurify.sanitize(str, METADATA_DOM_PURIFY_CONFIG);
 };
 
 const sanitizeUrlOrNull = (url: string | null) => {
@@ -73,7 +73,7 @@ export const pageRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        slug: z.string().regex(urlSafeSlugRegex),
+        slug: z.string().regex(URL_SAFE_SLUG_REGEX),
         title: z.string().optional(),
         description: z.string().optional(),
         link: z.string().url().optional(),
@@ -112,7 +112,7 @@ export const pageRouter = createTRPCRouter({
     }),
 
   getPageBySlug: publicProcedure
-    .input(z.object({ slug: z.string().regex(urlSafeSlugRegex) }))
+    .input(z.object({ slug: z.string().regex(URL_SAFE_SLUG_REGEX) }))
     .query(async ({ input }) => {
       try {
         return await pageService.getPageBySlug(input.slug);
@@ -132,7 +132,7 @@ export const pageRouter = createTRPCRouter({
   slugExists: publicProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ input }) => {
-      const isValidSlug = urlSafeSlugRegex.test(input.slug);
+      const isValidSlug = URL_SAFE_SLUG_REGEX.test(input.slug);
       if (!isValidSlug) {
         throw new TRPCError({
           code: TRPCErrorCode.BAD_REQUEST,

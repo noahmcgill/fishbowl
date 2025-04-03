@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { LuTrash, LuUpload } from "react-icons/lu";
-import { inputFormattedMimeTypes } from "@/lib/constants";
+import { INPUT_FORMATTED_MIMETYPES } from "@/lib/constants";
 
 interface ImageUploadProps {
   image: string | null;
@@ -33,7 +33,7 @@ export const ImageUploader: React.FC<ImageUploadProps> = ({
       <label className="cursor-pointer">
         <input
           type="file"
-          accept={inputFormattedMimeTypes}
+          accept={INPUT_FORMATTED_MIMETYPES}
           className="hidden"
           onChange={handleImageChange}
           ref={fileInputRef}

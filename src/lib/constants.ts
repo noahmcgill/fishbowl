@@ -9,7 +9,7 @@ export enum TRPCErrorCode {
 
 export const SLUG_COOKIE_NAME = "fishbowl.signup.slug";
 
-export const profileImageAcceptedMimeTypes = [
+export const PROFILE_IMAGE_ACCEPTED_MIMETYPES = [
   "apng",
   "avif",
   "gif",
@@ -19,8 +19,8 @@ export const profileImageAcceptedMimeTypes = [
   "webp",
 ];
 
-export const inputFormattedMimeTypes = profileImageAcceptedMimeTypes.reduce(
-  (acc, curr, i) => {
+export const INPUT_FORMATTED_MIMETYPES =
+  PROFILE_IMAGE_ACCEPTED_MIMETYPES.reduce((acc, curr, i) => {
     const fullCurr = `image/${curr}`;
 
     if (i === 0) {
@@ -28,22 +28,20 @@ export const inputFormattedMimeTypes = profileImageAcceptedMimeTypes.reduce(
     }
 
     return `${acc},${fullCurr}`;
-  },
-  "",
-);
+  }, "");
 
 export const imageMimeTypeRegex = new RegExp(
-  `^image\/(${profileImageAcceptedMimeTypes.join("|")})$`,
+  `^image\/(${PROFILE_IMAGE_ACCEPTED_MIMETYPES.join("|")})$`,
 );
 
 // URL-safe slug (lowercase letters, numbers, and hyphens)
-export const urlSafeSlugRegex = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+export const URL_SAFE_SLUG_REGEX = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
-export const metadataDomPurifyConfig = {
+export const METADATA_DOM_PURIFY_CONFIG = {
   ALLOWED_TAGS: ["b", "i", "p", "br", "div"],
 };
 
-export const blockDataDomPurifyConfig = {
+export const BLOCK_DATA_DOM_PURIFY_CONFIG = {
   ALLOWED_TAGS: ["b", "i", "p"],
 };
 

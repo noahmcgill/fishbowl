@@ -5,6 +5,7 @@ import { LuTrash } from "react-icons/lu";
 import { SingleBlockIcon } from "@/icons/single-block-icon";
 import { DoubleBlockIcon } from "@/icons/double-block-icon";
 import { TXTBlockIcon } from "@/icons/txt-block-icon";
+import { FXTBlockIcon } from "@/icons/fxt-block-icon";
 
 interface SizeSelectorProps {
   handleChange: (size: BlockSize) => Promise<void>;
@@ -34,6 +35,11 @@ export const SizeSelector: React.FC<SizeSelectorProps> = ({
       size: BlockSize.TXT,
       icon: <TXTBlockIcon />,
       label: "Switch to 2x2 grid",
+    },
+    {
+      size: BlockSize.FXT,
+      icon: <FXTBlockIcon />,
+      label: "Switch to 4x4 grid",
     },
   ];
 

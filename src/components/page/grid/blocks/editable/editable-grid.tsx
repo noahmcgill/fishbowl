@@ -2,7 +2,7 @@
 
 import { gridStateAtom, layoutsAtom } from "@/store";
 import { useAtom, useAtomValue } from "jotai";
-import React, { type ComponentClass, useEffect, useMemo, useRef } from "react";
+import React, { type ComponentClass, useMemo } from "react";
 import {
   type Layout,
   type Layouts,
@@ -16,6 +16,7 @@ import { EditableSingleDataPointBlock } from "./editable-single-data-point-block
 import { CheckConfig } from "@/lib/utils/store";
 import { type JsonObject } from "@prisma/client/runtime/library";
 import { type GridState } from "@/store/types";
+import { EditableBarChartBlock } from "./editable-bar-chart-block";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 
@@ -33,12 +34,10 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
   pageId,
   initialGridState,
 }) => {
-  // STATE & ATOMS
-  const ref = useRef<HTMLDivElement>(null);
   const initialGridStateCast = initialGridState as unknown as GridState;
 
+  // STATE & ATOMS
   useHydrateAtoms([[gridStateAtom, initialGridStateCast]]);
-
   const gridState = useAtomValue(gridStateAtom);
   const [layouts, setLayouts] = useAtom(layoutsAtom);
 
@@ -48,11 +47,6 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
     [],
   );
 
-  useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: "smooth" });
-  }, [layouts]);
-
-  // ACTIONS
   const { mutateAsync } = api.page.updateGridState.useMutation({
     onError: () => {
       toast.error(
@@ -61,6 +55,7 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
     },
   });
 
+  // ACTIONS
   const onLayoutChange = async (
     currentLayout: Layout[],
     allLayouts: Layouts,
@@ -97,6 +92,16 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
                 />
               </div>
             );
+          } else if (CheckConfig.isBarChartConfig(widget.config)) {
+            return (
+              <div key={widget.key}>
+                <EditableBarChartBlock
+                  config={widget.config}
+                  blockKey={widget.key}
+                  pageId={pageId}
+                />
+              </div>
+            );
           }
 
           return (
@@ -109,7 +114,6 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
           );
         })}
       </ResponsiveReactGridLayout>
-      <div id="anchor" ref={ref}></div>
     </div>
   );
 };

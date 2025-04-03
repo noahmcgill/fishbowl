@@ -1,4 +1,5 @@
 import {
+  type BarChartConfig,
   ConfigType,
   type BaseConfig,
   type SingleDataPointConfig,
@@ -9,5 +10,9 @@ export class CheckConfig {
     config: BaseConfig,
   ): config is SingleDataPointConfig {
     return config.type === ConfigType.COUNT;
+  }
+
+  public static isBarChartConfig(config: BaseConfig): config is BarChartConfig {
+    return config.type === ConfigType.BAR;
   }
 }

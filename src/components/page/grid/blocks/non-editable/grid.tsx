@@ -11,6 +11,7 @@ import { CheckConfig } from "@/lib/utils/store";
 import { type JsonObject } from "@prisma/client/runtime/library";
 import { type GridState } from "@/store/types";
 import { SingleDataPointBlock } from "./single-data-point-block";
+import { BarChartBlock } from "./bar-chart-block";
 
 type ResponsiveGridType = ComponentClass<
   ResponsiveProps & WidthProviderProps,
@@ -53,6 +54,12 @@ export const Grid: React.FC<EditableGridStateProps> = ({
                   blockKey={widget.key}
                   pageId={pageId}
                 />
+              </div>
+            );
+          } else if (CheckConfig.isBarChartConfig(widget.config)) {
+            return (
+              <div key={widget.key}>
+                <BarChartBlock config={widget.config} blockKey={widget.key} />
               </div>
             );
           }

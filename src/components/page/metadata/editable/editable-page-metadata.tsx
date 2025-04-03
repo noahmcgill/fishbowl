@@ -8,7 +8,7 @@ import { useDebounce } from "@/lib/hooks/use-debounce";
 import {
   METADATA_DESC_SANITIZED_MAX_LENGTH,
   METADATA_TITLE_SANITIZED_MAX_LENGTH,
-  metadataDomPurifyConfig,
+  METADATA_DOM_PURIFY_CONFIG,
 } from "@/lib/constants";
 import { ContentEditable } from "../../../ui/content-editable";
 import { type ContentEditableEvent } from "react-contenteditable";
@@ -61,7 +61,7 @@ export const EditablePageMetadata: React.FC<EditablePageMetadataProps> = ({
     const sanitizedContent =
       rawContent === "" || rawContent === "<br>"
         ? null
-        : DOMPurify.sanitize(rawContent, metadataDomPurifyConfig);
+        : DOMPurify.sanitize(rawContent, METADATA_DOM_PURIFY_CONFIG);
     setter(sanitizedContent);
   };
 

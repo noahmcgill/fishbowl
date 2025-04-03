@@ -15,9 +15,17 @@ import {
 } from "@/components/ui/tooltip";
 import { gridStateAtom } from "@/store";
 import { useAtom } from "jotai";
-import { LuPlus, LuCircleDotDashed } from "react-icons/lu";
+import {
+  LuPlus,
+  LuCircleDotDashed,
+  LuChartColumnIncreasing,
+} from "react-icons/lu";
 import { createId } from "@paralleldrive/cuid2";
-import { ConfigType, type SingleDataPointConfig } from "@/store/types";
+import {
+  type BarChartConfig,
+  ConfigType,
+  type SingleDataPointConfig,
+} from "@/store/types";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 
@@ -66,6 +74,36 @@ export const AddWidgetDropdown: React.FC<AddWidgetDropdownProps> = ({
     });
   };
 
+  const handleAddBarChart = async (config: BarChartConfig) => {
+    const key = createId();
+    const newGridState = {
+      widgets: [
+        ...gridState.widgets,
+        {
+          key,
+          config,
+        },
+      ],
+      layouts: {
+        lg: [
+          ...gridState.layouts.lg!,
+          { i: key, x: 0, y: Infinity, w: 2, h: 2, isResizable: false },
+        ],
+        md: [
+          ...gridState.layouts.md!,
+          { i: key, x: 0, y: Infinity, w: 2, h: 2, isResizable: false },
+        ],
+      },
+    };
+
+    setGridState(newGridState);
+
+    await mutateAsync({
+      pageId,
+      gridState: newGridState,
+    });
+  };
+
   return (
     <TooltipProvider>
       <Tooltip>
@@ -94,6 +132,53 @@ export const AddWidgetDropdown: React.FC<AddWidgetDropdownProps> = ({
             >
               <LuCircleDotDashed />
               Single Data Point
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                handleAddBarChart({
+                  type: ConfigType.BAR,
+                  title: "Bar Chart",
+                  description: null,
+                  data: {
+                    labels: ["Jan.", "Feb.", "Mar.", "Apr."],
+                    datasets: [
+                      {
+                        label: "Sales",
+                        data: [1, 2, 3, 4],
+                        backgroundColor: "rgba(54, 162, 235, 0.5)",
+                        borderWidth: 0,
+                        barThickness: 6,
+                      },
+                    ],
+                  },
+                  options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        display: false,
+                      },
+                      tooltip: {
+                        enabled: true,
+                      },
+                    },
+                    scales: {
+                      x: {
+                        ticks: { color: "black" },
+                        grid: { display: false },
+                      },
+                      y: {
+                        ticks: { color: "black" },
+                        grid: { color: "transparent" },
+                      },
+                    },
+                  },
+                })
+              }
+              className="cursor-pointer rounded-lg p-3 text-xs text-zinc-500"
+            >
+              <LuChartColumnIncreasing />
+              Bar Chart
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
