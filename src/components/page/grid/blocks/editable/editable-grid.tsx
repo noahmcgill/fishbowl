@@ -20,6 +20,7 @@ import { EditableBarChartBlock } from "./editable-bar-chart-block";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { EditableTitleBlock } from "./editable-title-block";
+import { useIsMounted } from "@/lib/hooks/use-is-mounted";
 
 type ResponsiveGridType = ComponentClass<
   ResponsiveProps & WidthProviderProps,
@@ -41,8 +42,10 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
   useHydrateAtoms([[gridStateAtom, initialGridStateCast]]);
   const gridState = useAtomValue(gridStateAtom);
   const [layouts, setLayouts] = useAtom(layoutsAtom);
+  const isMounted = useIsMounted();
 
   // HOOKS
+
   const ResponsiveReactGridLayout = useMemo<ResponsiveGridType>(
     () => WidthProvider(Responsive),
     [],
@@ -72,59 +75,61 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
 
   return (
     <div>
-      <ResponsiveReactGridLayout
-        className="m-[-40px] animate-fadeIn-1.5s"
-        breakpoints={{ lg: 768, md: 0 }}
-        cols={{ lg: 4, md: 2 }}
-        rowHeight={175}
-        layouts={layouts}
-        margin={[40, 40]}
-        onLayoutChange={onLayoutChange}
-        draggableHandle=".drag-handle"
-      >
-        {gridState.widgets.map((widget) => {
-          if (CheckConfig.isSingleDataPointConfig(widget.config)) {
-            return (
-              <div key={widget.key}>
-                <EditableSingleDataPointBlock
-                  config={widget.config}
-                  blockKey={widget.key}
-                  pageId={pageId}
-                />
-              </div>
-            );
-          } else if (CheckConfig.isBarChartConfig(widget.config)) {
-            return (
-              <div key={widget.key}>
-                <EditableBarChartBlock
-                  config={widget.config}
-                  blockKey={widget.key}
-                  pageId={pageId}
-                />
-              </div>
-            );
-          } else if (CheckConfig.isTitleConfig(widget.config)) {
-            return (
-              <div key={widget.key}>
-                <EditableTitleBlock
-                  config={widget.config}
-                  blockKey={widget.key}
-                  pageId={pageId}
-                />
-              </div>
-            );
-          }
+      {isMounted && (
+        <ResponsiveReactGridLayout
+          className="m-[-40px] animate-fadeIn-1.5s"
+          breakpoints={{ lg: 768, md: 0 }}
+          cols={{ lg: 4, md: 2 }}
+          rowHeight={175}
+          layouts={layouts}
+          margin={[40, 40]}
+          onLayoutChange={onLayoutChange}
+          draggableHandle=".drag-handle"
+        >
+          {gridState.widgets.map((widget) => {
+            if (CheckConfig.isSingleDataPointConfig(widget.config)) {
+              return (
+                <div key={widget.key}>
+                  <EditableSingleDataPointBlock
+                    config={widget.config}
+                    blockKey={widget.key}
+                    pageId={pageId}
+                  />
+                </div>
+              );
+            } else if (CheckConfig.isBarChartConfig(widget.config)) {
+              return (
+                <div key={widget.key}>
+                  <EditableBarChartBlock
+                    config={widget.config}
+                    blockKey={widget.key}
+                    pageId={pageId}
+                  />
+                </div>
+              );
+            } else if (CheckConfig.isTitleConfig(widget.config)) {
+              return (
+                <div key={widget.key}>
+                  <EditableTitleBlock
+                    config={widget.config}
+                    blockKey={widget.key}
+                    pageId={pageId}
+                  />
+                </div>
+              );
+            }
 
-          return (
-            <div
-              key={widget.key}
-              className="flex items-center justify-center rounded-3xl bg-white shadow-[0_2px_4px_rgba(0,0,0,.04)]"
-            >
-              {widget.key}
-            </div>
-          );
-        })}
-      </ResponsiveReactGridLayout>
+            return (
+              <div
+                key={widget.key}
+                className="flex items-center justify-center rounded-3xl bg-white shadow-[0_2px_4px_rgba(0,0,0,.04)]"
+              >
+                {widget.key}
+              </div>
+            );
+          })}
+        </ResponsiveReactGridLayout>
+      )}
       <div className="h-[200px]"> </div>
     </div>
   );

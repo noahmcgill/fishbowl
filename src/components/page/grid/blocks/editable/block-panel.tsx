@@ -53,7 +53,7 @@ export const BlockPanel: React.FC<BlockPanelProps> = ({
     <div className="absolute bottom-[-18px] flex items-center gap-1 self-center rounded-[24px] bg-zinc-900 px-2 py-1 shadow-[0_2px_4px_rgba(0,0,0,.04)]">
       {showSizeSelector &&
         sizeButtons
-          .filter(({ size }) => allowedSizes.includes(size)) // Updated filter logic
+          .filter(({ size }) => allowedSizes.includes(size))
           .map(({ size, icon, label }) => (
             <div
               key={size}

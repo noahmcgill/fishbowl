@@ -26,7 +26,7 @@ export const ImageUploader: React.FC<ImageUploadProps> = ({
 
   return (
     <div
-      className="relative h-32 w-32 md:h-48 md:w-48"
+      className="relative h-32 w-32 min-[1360px]:h-48 min-[1360px]:w-48"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -43,7 +43,7 @@ export const ImageUploader: React.FC<ImageUploadProps> = ({
         >
           <AvatarImage src={image || undefined} alt="Uploaded preview" />
           <AvatarFallback className="bg-zinc-50 hover:bg-zinc-100">
-            <div className="gap- flex flex-col items-center">
+            <div className="flex flex-col items-center">
               <LuUpload className="h-6 w-6 text-zinc-600" />
               <p className="font-medium text-zinc-600">Add Avatar</p>
             </div>
@@ -51,7 +51,7 @@ export const ImageUploader: React.FC<ImageUploadProps> = ({
         </Avatar>
       </label>
       {image && isHovered ? (
-        <div className="absolute bottom-0 flex w-full justify-between px-2 md:bottom-4">
+        <div className="absolute bottom-0 flex w-full justify-between px-2 min-[1360px]:bottom-4">
           <Button
             variant="outline"
             className="rounded-full bg-white p-2 shadow-md"

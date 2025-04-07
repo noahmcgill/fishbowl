@@ -101,9 +101,14 @@
 }
 
 .react-grid-item {
+  transition-property: none;
   transition: visibility 500ms ease 0s;
   overflow: visible;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
+}
+
+.react-grid-item.animation-ready {
+  transition-property: transform;
 }

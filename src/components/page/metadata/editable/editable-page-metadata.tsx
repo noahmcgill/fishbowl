@@ -112,7 +112,7 @@ export const EditablePageMetadata: React.FC<EditablePageMetadataProps> = ({
       />
       {displayTitleCharsLeft && <CharsLeft charsLeft={titleCharsLeft} />}
       <ContentEditable
-        className="mt-3 text-zinc-600 md:text-xl xl:mt-3"
+        className="mt-3 text-zinc-600 xl:mt-3 min-[1360px]:text-xl"
         placeholder="Page bio..."
         role="textbox"
         onChange={(e) => sanitizeAndSetContent(e, setDesc)}
@@ -130,7 +130,7 @@ export const EditablePageMetadata: React.FC<EditablePageMetadataProps> = ({
           value={link ?? ""}
           placeholder="mycompany.com"
           onChange={(e) => setLink(e.target.value)}
-          className="border-0 p-0 text-sm text-zinc-500 shadow-none placeholder:text-zinc-400 focus-visible:ring-transparent md:text-base"
+          className="border-0 p-0 text-sm text-zinc-500 shadow-none placeholder:text-zinc-400 focus-visible:ring-transparent min-[1360px]:text-base"
         />
       </div>
       {!isUrlValid && (

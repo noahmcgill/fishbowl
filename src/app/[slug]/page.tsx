@@ -25,11 +25,11 @@ export default async function Page({
   const isEditable = session && session.user.id === page.userId;
 
   return (
-    <div className="flex h-full w-full flex-col md:flex-row md:justify-between">
+    <div className="flex h-full w-full flex-col items-center md:justify-between min-[1360px]:flex-row min-[1360px]:items-start">
       <Head>
         <link rel="preload" href={page.imageUrl ?? ""} as="image" />
       </Head>
-      <div className="flex basis-full animate-fadeIn-1.5s flex-col gap-8 md:basis-[400px]">
+      <div className="mb-12 flex w-[380px] animate-fadeIn-1.5s flex-col gap-2 min-[1360px]:mb-0 min-[1360px]:w-[400px] min-[1360px]:gap-8">
         {isEditable ? (
           <EditableUserProfileImage
             pageId={page.id}
@@ -44,7 +44,7 @@ export default async function Page({
           <PageMetadata page={page} />
         )}
       </div>
-      <div className="basis-full md:basis-[820px]">
+      <div className="w-[380px] min-[1360px]:w-[820px]">
         {isEditable ? (
           <EditableGrid
             initialGridState={page.gridState as JsonObject}
