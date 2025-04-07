@@ -67,9 +67,9 @@ export const EditableSingleDataPointBlock: React.FC<
       allowedBlockSizes={{
         SINGLE: true,
         DOUBLE: true,
-        ROW: false,
         TXT: false,
         FXT: false,
+        TITLE: false,
       }}
     >
       <div className="no-scrollbar w-full min-w-0 overflow-x-auto whitespace-nowrap">

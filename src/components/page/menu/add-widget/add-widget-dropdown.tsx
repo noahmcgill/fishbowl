@@ -19,15 +19,19 @@ import {
   LuPlus,
   LuCircleDotDashed,
   LuChartColumnIncreasing,
+  LuText,
 } from "react-icons/lu";
 import { createId } from "@paralleldrive/cuid2";
 import {
   type BarChartConfig,
   ConfigType,
   type SingleDataPointConfig,
+  type TitleConfig,
 } from "@/store/types";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
+import { BLOCK_SIZE_MAP } from "@/lib/constants";
+import { BlockSize } from "../../grid/blocks/editable/types";
 
 interface AddWidgetDropdownProps {
   pageId: string;
@@ -57,11 +61,23 @@ export const AddWidgetDropdown: React.FC<AddWidgetDropdownProps> = ({
       layouts: {
         lg: [
           ...gridState.layouts.lg!,
-          { i: key, x: 0, y: Infinity, w: 1, h: 1, isResizable: false },
+          {
+            ...BLOCK_SIZE_MAP[BlockSize.SINGLE].lg,
+            i: key,
+            x: 0,
+            y: Infinity,
+            isResizable: false,
+          },
         ],
         md: [
           ...gridState.layouts.md!,
-          { i: key, x: 0, y: Infinity, w: 1, h: 1, isResizable: false },
+          {
+            ...BLOCK_SIZE_MAP[BlockSize.SINGLE].md,
+            i: key,
+            x: 0,
+            y: Infinity,
+            isResizable: false,
+          },
         ],
       },
     };
@@ -87,11 +103,65 @@ export const AddWidgetDropdown: React.FC<AddWidgetDropdownProps> = ({
       layouts: {
         lg: [
           ...gridState.layouts.lg!,
-          { i: key, x: 0, y: Infinity, w: 2, h: 2, isResizable: false },
+          {
+            ...BLOCK_SIZE_MAP[BlockSize.TXT].lg,
+            i: key,
+            x: 0,
+            y: Infinity,
+            isResizable: false,
+          },
         ],
         md: [
           ...gridState.layouts.md!,
-          { i: key, x: 0, y: Infinity, w: 2, h: 2, isResizable: false },
+          {
+            ...BLOCK_SIZE_MAP[BlockSize.TXT].md,
+            i: key,
+            x: 0,
+            y: Infinity,
+            isResizable: false,
+          },
+        ],
+      },
+    };
+
+    setGridState(newGridState);
+
+    await mutateAsync({
+      pageId,
+      gridState: newGridState,
+    });
+  };
+
+  const handleAddTitle = async (config: TitleConfig) => {
+    const key = createId();
+    const newGridState = {
+      widgets: [
+        ...gridState.widgets,
+        {
+          key,
+          config,
+        },
+      ],
+      layouts: {
+        lg: [
+          ...gridState.layouts.lg!,
+          {
+            ...BLOCK_SIZE_MAP[BlockSize.TITLE].lg,
+            i: key,
+            x: 0,
+            y: Infinity,
+            isResizable: false,
+          },
+        ],
+        md: [
+          ...gridState.layouts.md!,
+          {
+            ...BLOCK_SIZE_MAP[BlockSize.TITLE].md,
+            i: key,
+            x: 0,
+            y: Infinity,
+            isResizable: false,
+          },
         ],
       },
     };
@@ -179,6 +249,19 @@ export const AddWidgetDropdown: React.FC<AddWidgetDropdownProps> = ({
             >
               <LuChartColumnIncreasing />
               Bar Chart
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                handleAddTitle({
+                  type: ConfigType.TITLE,
+                  title: "Title",
+                  description: null,
+                })
+              }
+              className="cursor-pointer rounded-lg p-3 text-xs text-zinc-500"
+            >
+              <LuText />
+              Title
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

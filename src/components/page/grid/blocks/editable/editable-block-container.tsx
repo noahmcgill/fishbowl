@@ -7,46 +7,10 @@ import { useMemo, useState } from "react";
 import { type Layout } from "react-grid-layout";
 import { MdOutlineDragIndicator } from "react-icons/md";
 import { toast } from "sonner";
-import {
-  type ResponsiveWH,
-  type AllowedBlockSizes,
-  BlockSize,
-  type WH,
-} from "./types";
-import { SizeSelector } from "./size-selector";
-
-const BLOCK_SIZE_MAP: Record<BlockSize, ResponsiveWH> = {
-  SINGLE: {
-    lg: { w: 1, h: 1 },
-    md: { w: 1, h: 1 },
-  },
-  DOUBLE: {
-    lg: { w: 2, h: 1 },
-    md: { w: 2, h: 1 },
-  },
-  ROW: {
-    lg: { w: 4, h: 1 },
-    md: { w: 2, h: 1 },
-  },
-  TXT: {
-    lg: { w: 2, h: 2 },
-    md: { w: 2, h: 2 },
-  },
-  FXT: {
-    lg: { w: 4, h: 2 },
-    md: { w: 2, h: 2 },
-  },
-};
-
-const WH_SIZE_MAP: Record<string, BlockSize> = {
-  "1,1": BlockSize.SINGLE,
-  "2,1": BlockSize.DOUBLE,
-  "4,1": BlockSize.ROW,
-  "2,2": BlockSize.TXT,
-};
-
-const getBlockSizeFromWH = (wh: WH): BlockSize =>
-  WH_SIZE_MAP[`${wh.w},${wh.h}`] ?? BlockSize.FXT;
+import { BlockSize, type AllowedBlockSizes } from "./types";
+import { BlockPanel } from "./block-panel";
+import { getBlockSizeFromWH } from "@/lib/utils/client/grid";
+import { BLOCK_SIZE_MAP } from "@/lib/constants";
 
 interface EditableBlockContainerProps {
   pageId: string;
@@ -119,7 +83,7 @@ export const EditableBlockContainer: React.FC<EditableBlockContainerProps> = ({
 
   return (
     <div
-      className="flex h-full w-full flex-col justify-center gap-2 rounded-3xl border-[1px] border-slate-200 p-8 shadow-[0_2px_4px_rgba(0,0,0,.04)] active:bg-white"
+      className={`flex h-full w-full animate-fadeIn flex-col justify-center gap-2 rounded-3xl border-[1px] p-8 transition-all hover:border-slate-200 hover:shadow-[0_2px_4px_rgba(0,0,0,.04)] active:bg-white ${currentSize !== BlockSize.TITLE ? "border-slate-200 shadow-[0_2px_4px_rgba(0,0,0,.04)]" : "shadow-0 border-white px-8 py-6"}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       key={blockKey}
@@ -136,11 +100,12 @@ export const EditableBlockContainer: React.FC<EditableBlockContainerProps> = ({
         </div>
       )}
       {isHovered && (
-        <SizeSelector
+        <BlockPanel
           handleChange={handleChangeBlockSize}
           handleDelete={handleDeleteBlock}
           allowedSizes={allowedBlockSizes}
           currentSize={currentSize}
+          showSizeSelector={currentSize !== BlockSize.TITLE}
         />
       )}
     </div>

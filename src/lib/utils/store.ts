@@ -3,6 +3,7 @@ import {
   ConfigType,
   type BaseConfig,
   type SingleDataPointConfig,
+  type TitleConfig,
 } from "@/store/types";
 
 export class CheckConfig {
@@ -14,5 +15,9 @@ export class CheckConfig {
 
   public static isBarChartConfig(config: BaseConfig): config is BarChartConfig {
     return config.type === ConfigType.BAR;
+  }
+
+  public static isTitleConfig(config: BaseConfig): config is TitleConfig {
+    return config.type === ConfigType.TITLE;
   }
 }

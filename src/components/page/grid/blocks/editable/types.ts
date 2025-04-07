@@ -11,9 +11,9 @@ export interface ResponsiveWH {
 export enum BlockSize {
   SINGLE = "SINGLE", // 1x1
   DOUBLE = "DOUBLE", // 2x1
-  ROW = "ROW", // 4x1
   TXT = "TXT", // 2x2
   FXT = "FXT", // 4x2
+  TITLE = "TITLE",
 }
 
 export type AllowedBlockSizes = Record<BlockSize, boolean>;

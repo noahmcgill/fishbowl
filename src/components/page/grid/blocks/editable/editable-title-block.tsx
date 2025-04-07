@@ -1,13 +1,5 @@
-import { type BarChartConfig } from "@/store/types";
+import { type TitleConfig } from "@/store/types";
 import { EditableBlockContainer } from "./editable-block-container";
-import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-} from "chart.js";
 import { ContentEditable } from "@/components/ui/content-editable";
 import { toast } from "sonner";
 import { useDebounce } from "@/lib/hooks/use-debounce";
@@ -15,43 +7,24 @@ import React, { useEffect, useState } from "react";
 import { BLOCK_DATA_DOM_PURIFY_CONFIG } from "@/lib/constants";
 import { sanitizeAndSetContentNoLineBreaks } from "@/lib/utils/client/sanitize";
 import { api } from "@/trpc/react";
-import { LuBrush, LuUpload } from "react-icons/lu";
-import { type BarChartBlockOption } from "./block-panel";
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip);
-
-interface EditableBarChartBlockProps {
+interface EditableTitleBlockProps {
   pageId: string;
   blockKey: string;
-  config: BarChartConfig;
+  config: TitleConfig;
 }
 
-export const EditableBarChartBlock: React.FC<EditableBarChartBlockProps> = ({
+export const EditableTitleBlock: React.FC<EditableTitleBlockProps> = ({
   pageId,
   blockKey,
   config,
 }) => {
-  const BarChartBlockOptions: BarChartBlockOption[] = [
-    {
-      label: "Change chart colors",
-      icon: <LuBrush />,
-      action: () => console.log("changing colors"),
-    },
-    {
-      label: "Add new data",
-      icon: <LuUpload />,
-      action: () => console.log("adding new data"),
-    },
-  ];
-
   // STATE
   const [title, setTitle] = useState<string | null>(config.title);
-  const [desc, setDesc] = useState<string | null>(config.description);
   const [inputHasChanged, setInputHasChanged] = useState<boolean>(false);
 
   // HOOKS
   const [debouncedTitle] = useDebounce(title, 1000);
-  const [debouncedDesc] = useDebounce(desc, 1000);
 
   const { mutate } = api.page.updatePageMetadata.useMutation({
     onError: () => {
@@ -82,7 +55,7 @@ export const EditableBarChartBlock: React.FC<EditableBarChartBlockProps> = ({
     toast.success("Your changes have been saved.");
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedTitle, debouncedDesc, mutate, pageId]);
+  }, [debouncedTitle, mutate, pageId]);
 
   return (
     <EditableBlockContainer
@@ -91,12 +64,12 @@ export const EditableBarChartBlock: React.FC<EditableBarChartBlockProps> = ({
       allowedBlockSizes={{
         SINGLE: false,
         DOUBLE: false,
-        TXT: true,
-        FXT: true,
+        TXT: false,
+        FXT: false,
         TITLE: false,
       }}
     >
-      <div className="no-scrollbar w-full min-w-0 overflow-x-auto overflow-y-hidden whitespace-nowrap pb-4">
+      <div className="no-scrollbar title-block w-full min-w-0 overflow-x-auto whitespace-nowrap">
         <ContentEditable
           html={title ?? ""}
           placeholder="Chart Title"
@@ -108,26 +81,6 @@ export const EditableBarChartBlock: React.FC<EditableBarChartBlockProps> = ({
             )
           }
           className="text-2xl font-bold text-black"
-          role="textbox"
-          tabIndex={0}
-        />
-      </div>
-      <div className="h-full w-full self-center">
-        <Bar data={config.data} options={config.options} />
-      </div>
-
-      <div className="no-scrollbar h-[50px] w-full min-w-0 overflow-y-auto">
-        <ContentEditable
-          html={desc ?? ""}
-          placeholder="Chart Description"
-          onChange={(e) =>
-            sanitizeAndSetContentNoLineBreaks(
-              e,
-              BLOCK_DATA_DOM_PURIFY_CONFIG,
-              setDesc,
-            )
-          }
-          className="text-md font-md text-zinc-700"
           role="textbox"
           tabIndex={0}
         />

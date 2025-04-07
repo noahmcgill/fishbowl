@@ -19,6 +19,7 @@ import { type GridState } from "@/store/types";
 import { EditableBarChartBlock } from "./editable-bar-chart-block";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
+import { EditableTitleBlock } from "./editable-title-block";
 
 type ResponsiveGridType = ComponentClass<
   ResponsiveProps & WidthProviderProps,
@@ -102,6 +103,16 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
                 />
               </div>
             );
+          } else if (CheckConfig.isTitleConfig(widget.config)) {
+            return (
+              <div key={widget.key}>
+                <EditableTitleBlock
+                  config={widget.config}
+                  blockKey={widget.key}
+                  pageId={pageId}
+                />
+              </div>
+            );
           }
 
           return (
@@ -114,6 +125,7 @@ export const EditableGrid: React.FC<EditableGridStateProps> = ({
           );
         })}
       </ResponsiveReactGridLayout>
+      <div className="h-[200px]"> </div>
     </div>
   );
 };

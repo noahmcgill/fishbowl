@@ -12,6 +12,7 @@ export type WidgetConfig = Record<string, string>;
 export enum ConfigType {
   COUNT = "COUNT",
   BAR = "BAR",
+  TITLE = "TITLE",
 }
 
 export interface BaseConfig {
@@ -36,6 +37,11 @@ export interface GridState {
 }
 
 export interface BarChartConfig extends BaseConfig {
+  type: ConfigType.BAR;
   data: ChartData<"bar", DefaultDataPoint<ChartType>, unknown>;
   options: ChartOptions<"bar">;
+}
+
+export interface TitleConfig extends BaseConfig {
+  type: ConfigType.TITLE;
 }

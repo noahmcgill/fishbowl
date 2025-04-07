@@ -1,7 +1,9 @@
+import { TEXT_FLEX_ALIGN_MAP } from "@/lib/constants";
 import React, {
   type KeyboardEvent,
   type FocusEvent,
   type FormEvent,
+  useRef,
 } from "react";
 import ReactContentEditable, {
   type ContentEditableEvent,
@@ -13,6 +15,7 @@ interface ContentEditableProps {
   tabIndex?: number;
   role?: string;
   placeholder?: string;
+  placeholderAlign?: "center" | "left" | "right";
   disabled?: boolean;
   onChange?: (e: ContentEditableEvent) => void;
   onInput?: (e: FormEvent<HTMLDivElement>) => void;
@@ -32,6 +35,7 @@ export const ContentEditable: React.FC<ContentEditableProps> = ({
   onBlur,
   onKeyDown,
   placeholder,
+  placeholderAlign = "left",
   className,
   html,
   ...props
@@ -54,10 +58,18 @@ export const ContentEditable: React.FC<ContentEditableProps> = ({
     onKeyDownRef.current = onKeyDown;
   }, [onKeyDown]);
 
+  const placeholderFlexAlign = TEXT_FLEX_ALIGN_MAP[placeholderAlign] || "end";
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  const handlePlaceholderClick = () => {
+    if (ref.current) ref.current.focus();
+  };
+
   return (
     <div className="relative flex cursor-text flex-col">
       <div
-        className={`${className} absolute text-zinc-200 ${placeholder && (html === "" || html === "<br>" || html === " ") ? "visible" : "invisible"}`}
+        className={`${className} absolute !text-zinc-200 ${placeholder && (html === "" || html === "<br>" || html === " ") ? "visible" : "invisible"} self-${placeholderFlexAlign}`}
+        onClick={handlePlaceholderClick}
       >
         {placeholder}
       </div>
@@ -65,6 +77,7 @@ export const ContentEditable: React.FC<ContentEditableProps> = ({
         {...props}
         html={html}
         className={className}
+        innerRef={ref}
         onChange={(e) => {
           if (onChangeRef.current) {
             onChangeRef.current(e);
