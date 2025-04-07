@@ -7,6 +7,7 @@ import { BLOCK_DATA_DOM_PURIFY_CONFIG } from "@/lib/constants";
 import { toast } from "sonner";
 import { sanitizeAndSetContentNoLineBreaks } from "@/lib/utils/client/sanitize";
 import { api } from "@/trpc/react";
+import { BlockSize } from "./types";
 
 interface EditableSingleDataPointBlockProps {
   pageId: string;
@@ -64,13 +65,7 @@ export const EditableSingleDataPointBlock: React.FC<
     <EditableBlockContainer
       blockKey={blockKey}
       pageId={pageId}
-      allowedBlockSizes={{
-        SINGLE: true,
-        DOUBLE: true,
-        TXT: false,
-        FXT: false,
-        TITLE: false,
-      }}
+      allowedBlockSizes={[BlockSize.SINGLE, BlockSize.DOUBLE]}
     >
       <div className="no-scrollbar w-full min-w-0 overflow-x-auto whitespace-nowrap">
         <ContentEditable

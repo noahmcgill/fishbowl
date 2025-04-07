@@ -77,8 +77,8 @@ export const BLOCK_SIZE_MAP: Record<BlockSize, ResponsiveWH> = {
     md: { w: 2, h: 2 },
   },
   TITLE: {
-    lg: { w: 4, h: 0.5 },
-    md: { w: 2, h: 0.5 },
+    lg: { w: 4, h: 0.35 },
+    md: { w: 2, h: 0.35 },
   },
 };
 
@@ -86,5 +86,5 @@ export const WH_SIZE_MAP: Record<string, BlockSize> = {
   "1,1": BlockSize.SINGLE,
   "2,1": BlockSize.DOUBLE,
   "2,2": BlockSize.TXT,
-  "4,0.5": BlockSize.TITLE,
+  "4,0.35": BlockSize.TITLE,
 };

@@ -12,6 +12,7 @@ import { type JsonObject } from "@prisma/client/runtime/library";
 import { type GridState } from "@/store/types";
 import { SingleDataPointBlock } from "./single-data-point-block";
 import { BarChartBlock } from "./bar-chart-block";
+import { TitleBlock } from "./title-block";
 
 type ResponsiveGridType = ComponentClass<
   ResponsiveProps & WidthProviderProps,
@@ -60,6 +61,12 @@ export const Grid: React.FC<EditableGridStateProps> = ({
             return (
               <div key={widget.key}>
                 <BarChartBlock config={widget.config} blockKey={widget.key} />
+              </div>
+            );
+          } else if (CheckConfig.isTitleConfig(widget.config)) {
+            return (
+              <div key={widget.key}>
+                <TitleBlock config={widget.config} blockKey={widget.key} />
               </div>
             );
           }

@@ -7,6 +7,7 @@ import {
   CategoryScale,
   LinearScale,
   Tooltip,
+  type Plugin,
 } from "chart.js";
 import { ContentEditable } from "@/components/ui/content-editable";
 import { toast } from "sonner";
@@ -17,8 +18,26 @@ import { sanitizeAndSetContentNoLineBreaks } from "@/lib/utils/client/sanitize";
 import { api } from "@/trpc/react";
 import { LuBrush, LuUpload } from "react-icons/lu";
 import { type BarChartBlockOption } from "./block-panel";
+import { BlockSize } from "./types";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip);
+
+const noDataPlugin: Plugin<"bar"> = {
+  id: "noDataMessage",
+  afterDraw(chart) {
+    if (chart.data.datasets.length < 1) {
+      const { ctx, width, height } = chart;
+
+      ctx.save();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "rgb(63, 63, 70)";
+      ctx.font = "normal 16px sans-serif";
+      ctx.fillText("No chart data available", width / 2, height / 2);
+      ctx.restore();
+    }
+  },
+};
 
 interface EditableBarChartBlockProps {
   pageId: string;
@@ -88,13 +107,7 @@ export const EditableBarChartBlock: React.FC<EditableBarChartBlockProps> = ({
     <EditableBlockContainer
       blockKey={blockKey}
       pageId={pageId}
-      allowedBlockSizes={{
-        SINGLE: false,
-        DOUBLE: false,
-        TXT: true,
-        FXT: true,
-        TITLE: false,
-      }}
+      allowedBlockSizes={[BlockSize.TXT, BlockSize.FXT]}
     >
       <div className="no-scrollbar w-full min-w-0 overflow-x-auto overflow-y-hidden whitespace-nowrap pb-4">
         <ContentEditable
@@ -113,7 +126,23 @@ export const EditableBarChartBlock: React.FC<EditableBarChartBlockProps> = ({
         />
       </div>
       <div className="h-full w-full self-center">
-        <Bar data={config.data} options={config.options} />
+        <Bar
+          data={config.data}
+          options={{
+            ...config.options,
+            scales: {
+              x: {
+                ...config.options.scales?.x,
+                display: config.data.datasets.length > 0,
+              },
+              y: {
+                ...config.options.scales?.y,
+                display: config.data.datasets.length > 0,
+              },
+            },
+          }}
+          plugins={[noDataPlugin]}
+        />
       </div>
 
       <div className="no-scrollbar h-[50px] w-full min-w-0 overflow-y-auto">

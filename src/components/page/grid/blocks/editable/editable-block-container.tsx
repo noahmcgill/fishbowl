@@ -7,7 +7,7 @@ import { useMemo, useState } from "react";
 import { type Layout } from "react-grid-layout";
 import { MdOutlineDragIndicator } from "react-icons/md";
 import { toast } from "sonner";
-import { BlockSize, type AllowedBlockSizes } from "./types";
+import { BlockSize } from "./types";
 import { BlockPanel } from "./block-panel";
 import { getBlockSizeFromWH } from "@/lib/utils/client/grid";
 import { BLOCK_SIZE_MAP } from "@/lib/constants";
@@ -16,7 +16,7 @@ interface EditableBlockContainerProps {
   pageId: string;
   blockKey: string;
   children: React.ReactNode;
-  allowedBlockSizes: AllowedBlockSizes;
+  allowedBlockSizes: BlockSize[];
 }
 
 export const EditableBlockContainer: React.FC<EditableBlockContainerProps> = ({
@@ -81,33 +81,35 @@ export const EditableBlockContainer: React.FC<EditableBlockContainerProps> = ({
     setCurrentSize(size);
   };
 
+  const controls = isHovered && (
+    <>
+      <div className="absolute left-[-14px] top-[-14px] flex w-full justify-between px-2">
+        <Button
+          variant="outline"
+          className="drag-handle cursor-grab rounded-full bg-white p-2 shadow-md active:cursor-grabbing"
+        >
+          <MdOutlineDragIndicator className="h-5 w-5" />
+        </Button>
+      </div>
+      <BlockPanel
+        handleChange={handleChangeBlockSize}
+        handleDelete={handleDeleteBlock}
+        allowedSizes={allowedBlockSizes}
+        currentSize={currentSize}
+        showSizeSelector={currentSize !== BlockSize.TITLE}
+      />
+    </>
+  );
+
   return (
     <div
-      className={`flex h-full w-full animate-fadeIn flex-col justify-center gap-2 rounded-3xl border-[1px] p-8 transition-all hover:border-slate-200 hover:shadow-[0_2px_4px_rgba(0,0,0,.04)] active:bg-white ${currentSize !== BlockSize.TITLE ? "border-slate-200 shadow-[0_2px_4px_rgba(0,0,0,.04)]" : "shadow-0 border-white px-8 py-6"}`}
+      className={`flex h-full w-full animate-fadeIn flex-col justify-center gap-2 rounded-3xl border-[1px] p-6 transition-all hover:border-slate-200 hover:shadow-[0_2px_4px_rgba(0,0,0,.04)] active:bg-white ${currentSize !== BlockSize.TITLE ? "border-slate-200 shadow-[0_2px_4px_rgba(0,0,0,.04)]" : "shadow-0 border-white px-4 py-1"}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       key={blockKey}
     >
       {children}
-      {isHovered && (
-        <div className="absolute left-[-14px] top-[-14px] flex w-full justify-between px-2">
-          <Button
-            variant="outline"
-            className="drag-handle cursor-grab rounded-full bg-white p-2 shadow-md active:cursor-grabbing"
-          >
-            <MdOutlineDragIndicator className="h-5 w-5" />
-          </Button>
-        </div>
-      )}
-      {isHovered && (
-        <BlockPanel
-          handleChange={handleChangeBlockSize}
-          handleDelete={handleDeleteBlock}
-          allowedSizes={allowedBlockSizes}
-          currentSize={currentSize}
-          showSizeSelector={currentSize !== BlockSize.TITLE}
-        />
-      )}
+      {controls}
     </div>
   );
 };

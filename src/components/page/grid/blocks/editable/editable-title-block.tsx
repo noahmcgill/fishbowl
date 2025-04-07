@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { BLOCK_DATA_DOM_PURIFY_CONFIG } from "@/lib/constants";
 import { sanitizeAndSetContentNoLineBreaks } from "@/lib/utils/client/sanitize";
 import { api } from "@/trpc/react";
+import { BlockSize } from "./types";
 
 interface EditableTitleBlockProps {
   pageId: string;
@@ -61,18 +62,12 @@ export const EditableTitleBlock: React.FC<EditableTitleBlockProps> = ({
     <EditableBlockContainer
       blockKey={blockKey}
       pageId={pageId}
-      allowedBlockSizes={{
-        SINGLE: false,
-        DOUBLE: false,
-        TXT: false,
-        FXT: false,
-        TITLE: false,
-      }}
+      allowedBlockSizes={[BlockSize.TITLE]}
     >
       <div className="no-scrollbar title-block w-full min-w-0 overflow-x-auto whitespace-nowrap">
         <ContentEditable
           html={title ?? ""}
-          placeholder="Chart Title"
+          placeholder="Section Title"
           onChange={(e) =>
             sanitizeAndSetContentNoLineBreaks(
               e,

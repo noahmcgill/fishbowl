@@ -1,11 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { type AllowedBlockSizes, BlockSize } from "./types";
+import { BlockSize } from "./types";
 import { Separator } from "@/components/ui/separator";
 import { LuTrash } from "react-icons/lu";
 import { SingleBlockIcon } from "@/icons/single-block-icon";
 import { DoubleBlockIcon } from "@/icons/double-block-icon";
-import { TXTBlockIcon } from "@/icons/txt-block-icon";
-import { FXTBlockIcon } from "@/icons/fxt-block-icon";
 
 export interface BarChartBlockOption {
   label: string;
@@ -16,7 +14,7 @@ export interface BarChartBlockOption {
 interface BlockPanelProps {
   handleChange: (size: BlockSize) => Promise<void>;
   handleDelete: () => Promise<void>;
-  allowedSizes: AllowedBlockSizes;
+  allowedSizes: BlockSize[]; // Updated here
   currentSize: BlockSize;
   showSizeSelector?: boolean;
 }
@@ -41,12 +39,12 @@ export const BlockPanel: React.FC<BlockPanelProps> = ({
     },
     {
       size: BlockSize.TXT,
-      icon: <TXTBlockIcon />,
+      icon: <SingleBlockIcon />,
       label: "Switch to 2x2 grid",
     },
     {
       size: BlockSize.FXT,
-      icon: <FXTBlockIcon />,
+      icon: <DoubleBlockIcon />,
       label: "Switch to 4x4 grid",
     },
   ];
@@ -55,7 +53,7 @@ export const BlockPanel: React.FC<BlockPanelProps> = ({
     <div className="absolute bottom-[-18px] flex items-center gap-1 self-center rounded-[24px] bg-zinc-900 px-2 py-1 shadow-[0_2px_4px_rgba(0,0,0,.04)]">
       {showSizeSelector &&
         sizeButtons
-          .filter(({ size }) => allowedSizes[size])
+          .filter(({ size }) => allowedSizes.includes(size)) // Updated filter logic
           .map(({ size, icon, label }) => (
             <div
               key={size}

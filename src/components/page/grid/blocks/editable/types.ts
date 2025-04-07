@@ -15,5 +15,3 @@ export enum BlockSize {
   FXT = "FXT", // 4x2
   TITLE = "TITLE",
 }
-
-export type AllowedBlockSizes = Record<BlockSize, boolean>;

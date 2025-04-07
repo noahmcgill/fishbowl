@@ -19,7 +19,7 @@ import {
   LuPlus,
   LuCircleDotDashed,
   LuChartColumnIncreasing,
-  LuText,
+  LuLetterText,
 } from "react-icons/lu";
 import { createId } from "@paralleldrive/cuid2";
 import {
@@ -210,16 +210,19 @@ export const AddWidgetDropdown: React.FC<AddWidgetDropdownProps> = ({
                   title: "Bar Chart",
                   description: null,
                   data: {
-                    labels: ["Jan.", "Feb.", "Mar.", "Apr."],
+                    labels: [],
+                    datasets: [],
+                    /*
                     datasets: [
                       {
-                        label: "Sales",
-                        data: [1, 2, 3, 4],
+                        label: "",
+                        data: [],
                         backgroundColor: "rgba(54, 162, 235, 0.5)",
                         borderWidth: 0,
                         barThickness: 6,
                       },
                     ],
+                    */
                   },
                   options: {
                     responsive: true,
@@ -260,7 +263,7 @@ export const AddWidgetDropdown: React.FC<AddWidgetDropdownProps> = ({
               }
               className="cursor-pointer rounded-lg p-3 text-xs text-zinc-500"
             >
-              <LuText />
+              <LuLetterText />
               Title
             </DropdownMenuItem>
           </DropdownMenuContent>
