@@ -22,13 +22,12 @@ export const PopulateBarChartAccordion: React.FC<
   const setWidgets = useSetAtom(widgetsAtom);
 
   // ACTIONS
-  const buildConfigData = (rows: CsvRow[]) => {
-    const seriesNames = Object.keys(rows[0] ?? []);
-    const labels = rows.map((_, idx) => `Row ${idx + 1}`);
-
-    const datasets = seriesNames.map((seriesName) => ({
-      label: seriesName,
-      data: rows.map((row) => Number(row[seriesName])),
+  const buildConfigData = (result: CsvRow[]) => {
+    const data = result as string[][];
+    const labels = data.slice(1).map((row) => row[0]);
+    const datasets = data[0]?.slice(1).map((_, index) => ({
+      label: data[0]?.[index + 1],
+      data: data.slice(1).map((row) => parseFloat(row[index + 1] ?? "")),
       backgroundColor: randomHexColor(),
     }));
 
@@ -38,7 +37,7 @@ export const PopulateBarChartAccordion: React.FC<
     };
   };
 
-  const onUpload = async (rows: CsvRow[]) => {
+  const onUpload = async (data: CsvRow[]) => {
     // @todo: mutate/persist
 
     setWidgets((prev) => {
@@ -49,7 +48,7 @@ export const PopulateBarChartAccordion: React.FC<
           ...widget,
           config: {
             ...widget.config,
-            data: buildConfigData(rows),
+            data: buildConfigData(data),
           },
         };
       });
@@ -59,7 +58,7 @@ export const PopulateBarChartAccordion: React.FC<
   };
 
   return (
-    <Accordion type="single" collapsible>
+    <Accordion type="single">
       <AccordionItem value="webhook">
         <AccordionTrigger>Populate from webhook</AccordionTrigger>
         <AccordionContent>

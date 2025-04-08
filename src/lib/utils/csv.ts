@@ -1,14 +1,21 @@
-export const isCsvDataNumeric = (rows: Record<string, string>[]): boolean => {
-  if (rows.length === 0) return false;
+export const isCsvDataNumeric = (data: string[][]): boolean => {
+  if (data.length <= 1) {
+    return true;
+  }
 
-  const headers = Object.keys(rows[0] ?? []);
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
 
-  return rows.every((row, i) =>
-    headers.every((header) => {
-      const value = row[header];
-      return (
-        value !== undefined && value.trim() !== "" && !isNaN(Number(value))
-      );
-    }),
-  );
+    if (!row) {
+      continue;
+    }
+
+    for (const cell of row) {
+      if (isNaN(Number(cell))) {
+        return false; // Return false if any cell is not a number
+      }
+    }
+  }
+
+  return true;
 };

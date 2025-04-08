@@ -21,6 +21,10 @@ export const BarChartOptionsTabs: React.FC<BarChartOptionsTabsProps> = ({
           <TabsTrigger value="customize">Customize Appearance</TabsTrigger>
         </TabsList>
         <TabsContent value="populate">
+          <p className="mt-6 text-sm">
+            There are two methods for populating chart data: webhooks and CSVs.
+            You can find instructions for each method below.
+          </p>
           <PopulateBarChartAccordion
             onClose={onClose}
             pageId={pageId}

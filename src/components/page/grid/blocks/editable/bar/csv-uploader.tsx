@@ -7,10 +7,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { isCsvDataNumeric } from "@/lib/utils/csv";
 
-export type CsvRow = Record<string, string>;
+export type CsvRow = string[];
 
 interface CsvUploaderProps {
-  onUpload: (rows: CsvRow[]) => Promise<void>;
+  onUpload: (data: CsvRow[]) => Promise<void>;
 }
 
 // @todo: set max rows
@@ -23,17 +23,17 @@ export const CsvUploader: React.FC<CsvUploaderProps> = ({ onUpload }) => {
     if (!file) return;
 
     Papa.parse<CsvRow>(file, {
-      header: true,
+      header: false,
       skipEmptyLines: true,
-      complete: (results: ParseResult<CsvRow>) => {
-        if (!isCsvDataNumeric(results.data)) {
+      complete: (result: ParseResult<CsvRow>) => {
+        if (!isCsvDataNumeric(data)) {
           toast.error("Some of the data points given are non-numeric.");
 
           setData([]);
           return;
         }
 
-        setData(results.data);
+        setData(result.data);
       },
       error: () => {
         toast.error(
@@ -52,11 +52,11 @@ export const CsvUploader: React.FC<CsvUploaderProps> = ({ onUpload }) => {
           each series must be formatted into a column like in the example below.
         </p>
         <pre className="overflow-x-auto whitespace-pre-wrap rounded-md bg-muted p-4 text-sm">
-          Series 1,Series 2,Series 3,Series 4 <br />
-          4,5,6,7 <br />
-          10,5,24,7 <br />
-          4,16,8,7 <br />
-          4,5,6,7 <br />
+          Category,Series 1,Series 2,Series 3 <br />
+          January,30,45,60 <br />
+          February,35,50,65 <br />
+          March,40,55,70 <br />
+          April,50,60,80 <br />
         </pre>
         <Card className="mt-2 p-3">
           <Label htmlFor="csv-upload">Select CSV File</Label>
