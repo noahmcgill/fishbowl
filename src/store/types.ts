@@ -26,9 +26,9 @@ export interface SingleDataPointConfig extends BaseConfig {
   data: string | null;
 }
 
-export interface Widget {
+export interface Widget<TConfig extends BaseConfig = BaseConfig> {
   key: string;
-  config: SingleDataPointConfig | BaseConfig;
+  config: TConfig;
 }
 
 export interface GridState {

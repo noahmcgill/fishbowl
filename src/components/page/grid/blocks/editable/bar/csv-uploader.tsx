@@ -54,7 +54,7 @@ export const CsvUploader: React.FC<CsvUploaderProps> = ({ onUpload }) => {
           must be numeric.
         </p>
         <pre className="overflow-x-auto whitespace-pre-wrap rounded-md bg-muted p-4 text-sm">
-          Category,Series 1,Series 2,Series 3 <br />
+          Label,Series 1,Series 2,Series 3 <br />
           January,30,45,60 <br />
           February,35,50,65 <br />
           March,40,55,70 <br />
