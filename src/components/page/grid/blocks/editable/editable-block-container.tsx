@@ -3,7 +3,7 @@ import { gridStateAtom } from "@/store";
 import { type GridState } from "@/store/types";
 import { api } from "@/trpc/react";
 import { useAtom } from "jotai";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { type Layout } from "react-grid-layout";
 import { MdOutlineDragIndicator } from "react-icons/md";
 import { toast } from "sonner";
@@ -11,23 +11,24 @@ import { BlockSize } from "./types";
 import { BlockPanel } from "./block-panel";
 import { getBlockSizeFromWH } from "@/lib/utils/client/grid";
 import { BLOCK_SIZE_MAP } from "@/lib/constants";
+import { BlockOptionsDialog } from "./block-options-dialog";
 
 interface EditableBlockContainerProps {
   pageId: string;
   blockKey: string;
   children: React.ReactNode;
   allowedBlockSizes: BlockSize[];
+  setIsEditMenuOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const EditableBlockContainer: React.FC<EditableBlockContainerProps> = ({
-  pageId,
-  blockKey,
-  children,
-  allowedBlockSizes,
-}) => {
+export const EditableBlockContainer: React.FC<EditableBlockContainerProps> & {
+  OptionsDialog: typeof BlockOptionsDialog;
+} = ({ pageId, blockKey, children, allowedBlockSizes, setIsEditMenuOpen }) => {
+  // STATE
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [gridState, setGridState] = useAtom(gridStateAtom);
 
+  // ACTIONS
   const memoizedBlock = useMemo(() => {
     return gridState.layouts.lg?.find((block) => block.i === blockKey);
   }, [blockKey, gridState.layouts.lg]);
@@ -97,6 +98,7 @@ export const EditableBlockContainer: React.FC<EditableBlockContainerProps> = ({
         allowedSizes={allowedBlockSizes}
         currentSize={currentSize}
         showSizeSelector={currentSize !== BlockSize.TITLE}
+        setIsEditMenuOpen={setIsEditMenuOpen}
       />
     </>
   );
@@ -113,3 +115,5 @@ export const EditableBlockContainer: React.FC<EditableBlockContainerProps> = ({
     </div>
   );
 };
+
+EditableBlockContainer.OptionsDialog = BlockOptionsDialog;

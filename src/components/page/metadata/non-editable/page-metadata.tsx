@@ -15,12 +15,12 @@ export const PageMetadata: React.FC<PageMetadataProps> = ({ page }) => {
     <div className="flex flex-col">
       <ContentEditable
         html={page.title ?? ""}
-        className="text-[32px] font-bold leading-[120%] tracking-[-1px] xl:text-[44px] xl:tracking-[-2px]"
+        className="text-[32px] font-bold leading-[120%] tracking-[-1px] min-[1360px]:text-[44px] min-[1360px]:tracking-[-2px]"
         role="textbox"
         disabled
       />
       <ContentEditable
-        className="mt-3 text-zinc-600 xl:mt-3 min-[1360px]:text-xl"
+        className="mt-3 text-zinc-600 min-[1360px]:mt-3 min-[1360px]:text-xl"
         role="textbox"
         html={page.description ?? ""}
         disabled

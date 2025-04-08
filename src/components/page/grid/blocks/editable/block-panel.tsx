@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { BlockSize } from "./types";
 import { Separator } from "@/components/ui/separator";
-import { LuTrash } from "react-icons/lu";
+import { LuSettings2, LuTrash } from "react-icons/lu";
 import { SingleBlockIcon } from "@/icons/single-block-icon";
 import { DoubleBlockIcon } from "@/icons/double-block-icon";
 
@@ -17,6 +17,7 @@ interface BlockPanelProps {
   allowedSizes: BlockSize[]; // Updated here
   currentSize: BlockSize;
   showSizeSelector?: boolean;
+  setIsEditMenuOpen?: (isOpen: boolean) => void;
 }
 
 export const BlockPanel: React.FC<BlockPanelProps> = ({
@@ -25,6 +26,7 @@ export const BlockPanel: React.FC<BlockPanelProps> = ({
   allowedSizes,
   currentSize,
   showSizeSelector = true,
+  setIsEditMenuOpen,
 }) => {
   const sizeButtons = [
     {
@@ -71,6 +73,20 @@ export const BlockPanel: React.FC<BlockPanelProps> = ({
           orientation="vertical"
           className="mx-1 h-[20px] justify-center text-white"
         />
+      )}
+
+      {setIsEditMenuOpen && (
+        <Button
+          size="icon"
+          variant="link"
+          aria-label="Open options menu"
+          className="mr-[-1]"
+          onClick={() => {
+            setIsEditMenuOpen(true);
+          }}
+        >
+          <LuSettings2 className="text-white no-underline" />
+        </Button>
       )}
 
       <Button

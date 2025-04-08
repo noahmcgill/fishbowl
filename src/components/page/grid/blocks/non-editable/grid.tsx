@@ -13,6 +13,7 @@ import { type GridState } from "@/store/types";
 import { SingleDataPointBlock } from "./single-data-point-block";
 import { BarChartBlock } from "./bar-chart-block";
 import { TitleBlock } from "./title-block";
+import { useIsMounted } from "@/lib/hooks/use-is-mounted";
 
 type ResponsiveGridType = ComponentClass<
   ResponsiveProps & WidthProviderProps,
@@ -29,6 +30,7 @@ export const Grid: React.FC<EditableGridStateProps> = ({
   gridState,
 }) => {
   const gridStateCast = gridState as unknown as GridState;
+  const isMounted = useIsMounted();
 
   const ResponsiveReactGridLayout = useMemo<ResponsiveGridType>(
     () => WidthProvider(Responsive),
@@ -37,50 +39,52 @@ export const Grid: React.FC<EditableGridStateProps> = ({
 
   return (
     <div>
-      <ResponsiveReactGridLayout
-        className="m-[-40px] animate-fadeIn-1.5s"
-        breakpoints={{ lg: 768, md: 0 }}
-        cols={{ lg: 4, md: 2 }}
-        rowHeight={175}
-        layouts={gridStateCast.layouts}
-        margin={[40, 40]}
-        isDraggable={false}
-      >
-        {gridStateCast.widgets.map((widget) => {
-          if (CheckConfig.isSingleDataPointConfig(widget.config)) {
-            return (
-              <div key={widget.key}>
-                <SingleDataPointBlock
-                  config={widget.config}
-                  blockKey={widget.key}
-                  pageId={pageId}
-                />
-              </div>
-            );
-          } else if (CheckConfig.isBarChartConfig(widget.config)) {
-            return (
-              <div key={widget.key}>
-                <BarChartBlock config={widget.config} blockKey={widget.key} />
-              </div>
-            );
-          } else if (CheckConfig.isTitleConfig(widget.config)) {
-            return (
-              <div key={widget.key}>
-                <TitleBlock config={widget.config} blockKey={widget.key} />
-              </div>
-            );
-          }
+      {isMounted && (
+        <ResponsiveReactGridLayout
+          className="m-[-40px] animate-fadeIn-1.5s"
+          breakpoints={{ lg: 768, md: 0 }}
+          cols={{ lg: 4, md: 2 }}
+          rowHeight={175}
+          layouts={gridStateCast.layouts}
+          margin={[40, 40]}
+          isDraggable={false}
+        >
+          {gridStateCast.widgets.map((widget) => {
+            if (CheckConfig.isSingleDataPointConfig(widget.config)) {
+              return (
+                <div key={widget.key}>
+                  <SingleDataPointBlock
+                    config={widget.config}
+                    blockKey={widget.key}
+                    pageId={pageId}
+                  />
+                </div>
+              );
+            } else if (CheckConfig.isBarChartConfig(widget.config)) {
+              return (
+                <div key={widget.key}>
+                  <BarChartBlock config={widget.config} blockKey={widget.key} />
+                </div>
+              );
+            } else if (CheckConfig.isTitleConfig(widget.config)) {
+              return (
+                <div key={widget.key}>
+                  <TitleBlock config={widget.config} blockKey={widget.key} />
+                </div>
+              );
+            }
 
-          return (
-            <div
-              key={widget.key}
-              className="flex items-center justify-center rounded-3xl bg-white shadow-[0_2px_4px_rgba(0,0,0,.04)]"
-            >
-              {widget.key}
-            </div>
-          );
-        })}
-      </ResponsiveReactGridLayout>
+            return (
+              <div
+                key={widget.key}
+                className="flex items-center justify-center rounded-3xl bg-white shadow-[0_2px_4px_rgba(0,0,0,.04)]"
+              >
+                {widget.key}
+              </div>
+            );
+          })}
+        </ResponsiveReactGridLayout>
+      )}
     </div>
   );
 };

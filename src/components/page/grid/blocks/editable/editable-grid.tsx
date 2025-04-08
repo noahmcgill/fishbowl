@@ -16,7 +16,7 @@ import { EditableSingleDataPointBlock } from "./editable-single-data-point-block
 import { CheckConfig } from "@/lib/utils/store";
 import { type JsonObject } from "@prisma/client/runtime/library";
 import { type GridState } from "@/store/types";
-import { EditableBarChartBlock } from "./editable-bar-chart-block";
+import { EditableBarChartBlock } from "./bar/editable-bar-chart-block";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { EditableTitleBlock } from "./editable-title-block";

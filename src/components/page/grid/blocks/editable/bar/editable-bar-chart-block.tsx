@@ -1,5 +1,5 @@
 import { type BarChartConfig } from "@/store/types";
-import { EditableBlockContainer } from "./editable-block-container";
+import { EditableBlockContainer } from "../editable-block-container";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -17,8 +17,9 @@ import { BLOCK_DATA_DOM_PURIFY_CONFIG } from "@/lib/constants";
 import { sanitizeAndSetContentNoLineBreaks } from "@/lib/utils/client/sanitize";
 import { api } from "@/trpc/react";
 import { LuBrush, LuUpload } from "react-icons/lu";
-import { type BarChartBlockOption } from "./block-panel";
-import { BlockSize } from "./types";
+import { type BarChartBlockOption } from "../block-panel";
+import { BlockSize } from "../types";
+import { BarChartOptionsTabs } from "./bar-chart-options-tabs";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip);
 
@@ -67,6 +68,7 @@ export const EditableBarChartBlock: React.FC<EditableBarChartBlockProps> = ({
   const [title, setTitle] = useState<string | null>(config.title);
   const [desc, setDesc] = useState<string | null>(config.description);
   const [inputHasChanged, setInputHasChanged] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   // HOOKS
   const [debouncedTitle] = useDebounce(title, 1000);
@@ -108,6 +110,7 @@ export const EditableBarChartBlock: React.FC<EditableBarChartBlockProps> = ({
       blockKey={blockKey}
       pageId={pageId}
       allowedBlockSizes={[BlockSize.TXT, BlockSize.FXT]}
+      setIsEditMenuOpen={setIsOpen}
     >
       <div className="no-scrollbar w-full min-w-0 overflow-x-auto overflow-y-hidden whitespace-nowrap pb-4">
         <ContentEditable
@@ -161,6 +164,17 @@ export const EditableBarChartBlock: React.FC<EditableBarChartBlockProps> = ({
           tabIndex={0}
         />
       </div>
+      <EditableBlockContainer.OptionsDialog
+        title="Bar Chart Options"
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      >
+        <BarChartOptionsTabs
+          pageId={pageId}
+          blockKey={blockKey}
+          onClose={() => setIsOpen(false)}
+        />
+      </EditableBlockContainer.OptionsDialog>
     </EditableBlockContainer>
   );
 };
