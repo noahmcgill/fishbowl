@@ -49,7 +49,9 @@ export const CsvUploader: React.FC<CsvUploaderProps> = ({ onUpload }) => {
       <div className="flex flex-col justify-items-center gap-2">
         <p>
           Please select a <b>.csv</b> file from your computer. For bar charts,
-          each series must be formatted into a column like in the example below.
+          CSV headers will be interpreted as series names, and the first cell of
+          each row will be interpreted as x-axis labels. All other cell values
+          must be numeric.
         </p>
         <pre className="overflow-x-auto whitespace-pre-wrap rounded-md bg-muted p-4 text-sm">
           Category,Series 1,Series 2,Series 3 <br />

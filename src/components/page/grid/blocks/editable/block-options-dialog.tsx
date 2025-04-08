@@ -14,7 +14,7 @@ export const BlockOptionsDialog: React.FC<BlockOptionsDialogProps> = ({
   setIsOpen,
 }) => (
   <Dialog open={isOpen} onOpenChange={setIsOpen}>
-    <DialogContent>
+    <DialogContent className="max-h-[95%] overflow-x-hidden overflow-y-scroll">
       <DialogTitle>{title}</DialogTitle>
       {children}
     </DialogContent>

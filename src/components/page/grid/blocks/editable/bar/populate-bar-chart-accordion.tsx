@@ -8,6 +8,7 @@ import { CsvUploader, type CsvRow } from "./csv-uploader";
 import { useSetAtom } from "jotai";
 import { widgetsAtom } from "@/store";
 import { randomHexColor } from "@/lib/utils/random-hex-color";
+import { WebhookInstructions } from "./webhook-instructions";
 
 interface PopulateBarChartAccordionProps {
   pageId: string;
@@ -62,7 +63,7 @@ export const PopulateBarChartAccordion: React.FC<
       <AccordionItem value="webhook">
         <AccordionTrigger>Populate from webhook</AccordionTrigger>
         <AccordionContent>
-          Yes. It adheres to the WAI-ARIA design pattern.
+          <WebhookInstructions blockKey={blockKey} />
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="csv">
