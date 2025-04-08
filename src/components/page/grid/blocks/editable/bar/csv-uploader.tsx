@@ -13,6 +13,8 @@ interface CsvUploaderProps {
   onUpload: (rows: CsvRow[]) => Promise<void>;
 }
 
+// @todo: set max rows
+
 export const CsvUploader: React.FC<CsvUploaderProps> = ({ onUpload }) => {
   const [data, setData] = useState<CsvRow[]>([]);
 

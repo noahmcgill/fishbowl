@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import CsvUploader, { CsvRow } from "./csv-uploader";
 import { PopulateBarChartAccordion } from "./populate-bar-chart-accordion";
+import { BarChartAppearanceSettings } from "./bar-chart-appearance-settings";
 
 interface BarChartOptionsTabsProps {
   pageId: string;
@@ -27,7 +27,9 @@ export const BarChartOptionsTabs: React.FC<BarChartOptionsTabsProps> = ({
             blockKey={blockKey}
           />
         </TabsContent>
-        <TabsContent value="customize">Customize Appearance</TabsContent>
+        <TabsContent value="customize">
+          <BarChartAppearanceSettings blockKey={blockKey} onClose={onClose} />
+        </TabsContent>
       </Tabs>
     </div>
   );
