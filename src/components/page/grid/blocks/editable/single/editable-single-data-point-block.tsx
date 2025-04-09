@@ -1,5 +1,5 @@
 import { type SingleDataPointConfig } from "@/store/types";
-import { EditableBlockContainer } from "./editable-block-container";
+import { EditableBlockContainer } from "../editable-block-container";
 import { ContentEditable } from "@/components/ui/content-editable";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/lib/hooks/use-debounce";
@@ -7,7 +7,8 @@ import { BLOCK_DATA_DOM_PURIFY_CONFIG } from "@/lib/constants";
 import { toast } from "sonner";
 import { sanitizeAndSetContentNoLineBreaks } from "@/lib/utils/client/sanitize";
 import { api } from "@/trpc/react";
-import { BlockSize } from "./types";
+import { BlockSize } from "../types";
+import { WebhookInstructions } from "./webhook-instructions";
 
 interface EditableSingleDataPointBlockProps {
   pageId: string;
@@ -23,6 +24,7 @@ export const EditableSingleDataPointBlock: React.FC<
   const [data, setData] = useState<string | null>(config.data);
   const [desc, setDesc] = useState<string | null>(config.description);
   const [inputHasChanged, setInputHasChanged] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   // HOOKS
   const [debouncedTitle] = useDebounce(title, 1000);
@@ -66,6 +68,7 @@ export const EditableSingleDataPointBlock: React.FC<
       blockKey={blockKey}
       pageId={pageId}
       allowedBlockSizes={[BlockSize.SINGLE, BlockSize.DOUBLE]}
+      setIsEditMenuOpen={setIsOpen}
     >
       <div className="no-scrollbar w-full min-w-0 overflow-x-auto whitespace-nowrap">
         <ContentEditable
@@ -115,6 +118,16 @@ export const EditableSingleDataPointBlock: React.FC<
           tabIndex={0}
         />
       </div>
+      <EditableBlockContainer.OptionsDialog
+        title="Populate Block Data"
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      >
+        <WebhookInstructions
+          blockKey={blockKey}
+          onClose={() => setIsOpen(false)}
+        />
+      </EditableBlockContainer.OptionsDialog>
     </EditableBlockContainer>
   );
 };

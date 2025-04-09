@@ -10,6 +10,7 @@ import {
   type Widget,
 } from "@/store/types";
 import { type JsonObject } from "@prisma/client/runtime/library";
+import { type z } from "zod";
 
 type GetWidgetOptions = {
   req: Request;
@@ -84,4 +85,17 @@ export const updateState = async <T extends BaseConfig>(
       gridState: newState as unknown as JsonObject,
     },
   });
+};
+
+export const parseJson = async <T>(
+  req: Request,
+  schema: z.ZodType<T>,
+): Promise<T | Response> => {
+  try {
+    const json = (await req.json()) as unknown;
+    return schema.parse(json);
+  } catch (e) {
+    console.error(e);
+    return jsonResponse({ error: "Invalid request format" }, 400, CORS_HEADERS);
+  }
 };

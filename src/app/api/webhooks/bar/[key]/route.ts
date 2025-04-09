@@ -10,11 +10,11 @@ import {
   type SingleDataPointConfig,
 } from "@/store/types";
 import { z } from "zod";
-import { dataRoutePreChecks, updateState } from "../../helpers";
+import { dataRoutePreChecks, parseJson, updateState } from "../../helpers";
 
 type RequestBody = { data: string[][] };
 
-// @todo: clean up and test
+// @todo: test
 
 export async function POST(
   req: Request,
@@ -24,29 +24,19 @@ export async function POST(
     const result = await dataRoutePreChecks<BarChartConfig>({
       req,
       params,
-      expectedType: ConfigType.COUNT,
+      expectedType: ConfigType.BAR,
     });
 
     if (result instanceof Response) return result;
 
     const { page, widget, state, key } = result;
-    let body: RequestBody = { data: [] };
-    try {
-      body = (await req.json()) as RequestBody;
-
-      const dataSchema = z.object({
+    const body = await parseJson<RequestBody>(
+      req,
+      z.object({
         data: z.array(z.array(z.string())),
-      });
-
-      body = dataSchema.parse(body);
-    } catch (e) {
-      console.error(e);
-      return jsonResponse(
-        { error: "Chart data format is invalid" },
-        400,
-        CORS_HEADERS,
-      );
-    }
+      }),
+    );
+    if (body instanceof Response) return body;
 
     const components = csvToBarChartData(body.data);
     const data = getConfigWithPersistedColors(widget, components);
@@ -71,7 +61,7 @@ export async function GET(
     const result = await dataRoutePreChecks<SingleDataPointConfig>({
       req,
       params,
-      expectedType: ConfigType.COUNT,
+      expectedType: ConfigType.BAR,
     });
 
     if (result instanceof Response) return result;

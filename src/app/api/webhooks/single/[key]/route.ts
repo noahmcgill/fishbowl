@@ -2,13 +2,13 @@ import { CORS_HEADERS } from "@/lib/utils/server/cors";
 import { jsonResponse } from "@/lib/utils/server/json-response";
 import { ConfigType, type SingleDataPointConfig } from "@/store/types";
 import { z } from "zod";
-import { dataRoutePreChecks, updateState } from "../../helpers";
+import { dataRoutePreChecks, parseJson, updateState } from "../../helpers";
 
 type RequestBody = {
   data?: string;
 };
 
-// @todo: clean up and test
+// @todo: test
 
 export async function POST(
   req: Request,
@@ -24,23 +24,11 @@ export async function POST(
     if (result instanceof Response) return result;
 
     const { page, widget, state, key } = result;
-    let body: RequestBody | null = null;
-    try {
-      body = (await req.json()) as RequestBody;
-
-      const dataSchema = z.object({
-        data: z.string().optional(),
-      });
-
-      body = dataSchema.parse(body);
-    } catch (e) {
-      console.error(e);
-      return jsonResponse(
-        { error: "Single data point data format is invalid" },
-        400,
-        CORS_HEADERS,
-      );
-    }
+    const body = await parseJson<RequestBody>(
+      req,
+      z.object({ data: z.string().optional() }),
+    );
+    if (body instanceof Response) return body;
 
     await updateState<SingleDataPointConfig>(
       page?.id ?? "",
