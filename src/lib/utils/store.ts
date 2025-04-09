@@ -4,6 +4,7 @@ import {
   type BaseConfig,
   type SingleDataPointConfig,
   type TitleConfig,
+  type Widget,
 } from "@/store/types";
 
 export class CheckConfig {
@@ -21,3 +22,15 @@ export class CheckConfig {
     return config.type === ConfigType.TITLE;
   }
 }
+
+export const isWidget = <T extends BaseConfig>(
+  obj: unknown,
+): obj is Widget<T> => {
+  if (typeof obj === "object" && obj !== null && "config" in obj) {
+    const config = (obj as { config: unknown }).config;
+
+    return typeof config === "object" && config !== null && "type" in config;
+  }
+
+  return false;
+};

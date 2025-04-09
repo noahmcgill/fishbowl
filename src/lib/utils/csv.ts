@@ -83,7 +83,6 @@ export const csvToBarChartData = (
   };
 };
 
-// @todo: should be called when updating chart from frontend too
 export const getConfigWithPersistedColors = (
   existingWidget: Widget<BarChartConfig>,
   components: ReturnType<typeof csvToBarChartData>,
